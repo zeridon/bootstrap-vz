@@ -1,34 +1,11 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>build-debian-cloud by andsens</title>
-
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
+	{% include htmlhead.html title="build-debian-cloud by andsens"}
   <body>
     <div class="wrapper">
-      <header>
-        <h1>build-debian-cloud</h1>
-        <p>Script to create Debian images for Amazon EC2, Google Compute Engine and Virtualbox</p>
-
-        <p class="view"><a href="https://github.com/andsens/build-debian-cloud">View the Project on GitHub <small>andsens/build-debian-cloud</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/andsens/build-debian-cloud/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/andsens/build-debian-cloud/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/andsens/build-debian-cloud">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
+    	{% include header.html %}
       <section>
-        <h1>
+<h1>
 <a name="build-debian-cloud-python-version-preview" class="anchor" href="#build-debian-cloud-python-version-preview"><span class="octicon octicon-link"></span></a>build-debian-cloud python version (preview)</h1>
 
 <p>This is a preview of the build-debian-cloud python version.<br>
@@ -49,68 +26,55 @@ Pull requests are also welcome!</p>
 Other depencies include:</p>
 
 <ul>
-<li>qemu-utils</li>
-<li>parted</li>
-<li>grub2</li>
-<li>euca2ools</li>
-<li>xfsprogs (If you want to use XFS as a filesystem)
-Also the following python libraries are required:</li>
-<li><strong>boto</strong></li>
-<li>
-<strong>jsonschema</strong> (<a href="https://pypi.python.org/pypi/jsonschema">version 2.0.0</a>, only available through pip)</li>
-<li><strong>termcolor</strong></li>
-<li><strong>fysom</strong></li>
-</ul><p>Bootstrapping instance store AMIs requires <strong>euca2ools</strong> to be installed.</p>
+	<li>qemu-utils</li>
+	<li>parted</li>
+	<li>grub2</li>
+	<li>euca2ools</li>
+	<li>xfsprogs (If you want to use XFS as a filesystem)
+	Also the following python libraries are required:</li>
+	<li><strong>boto</strong></li>
+	<li>
+	<strong>jsonschema</strong> (<a href="https://pypi.python.org/pypi/jsonschema">version 2.0.0</a>, only available through pip)</li>
+	<li><strong>termcolor</strong></li>
+	<li><strong>fysom</strong></li>
+</ul>
+
+<p>Bootstrapping instance store AMIs requires <strong>euca2ools</strong> to be installed.</p>
 
 <h2>
 <a name="highlights" class="anchor" href="#highlights"><span class="octicon octicon-link"></span></a>Highlights</h2>
 
 <ul>
-<li>The desired image is configured entirely via a JSON manifest file
-
-<ul>
-<li>Manifests are validated by a json schemas</li>
-<li>Support comments</li>
+	<li>The desired image is configured entirely via a JSON manifest file
+		<ul>
+			<li>Manifests are validated by a json schemas</li>
+			<li>Support comments</li>
+		</ul>
+	</li>
+	<li>Proper support for different providers</li>
+	<li>The task based system has been completely revamped
+		<ul>
+			<li>Higher granularity increases reusability of tasks across providers</li>
+			<li>Tasks are neatly organized into modules</li>
+			<li>A task dependency graph is built to determine the execution order</li>
+		</ul>
+	</li>
+	<li>Support for rollback actions if something fails</li>
+	<li>Logfiles
+		<ul>
+			<li>All output from invoked subprocesses is logged</li>
+		</ul>
+	</li>
 </ul>
-</li>
-<li>Proper support for different providers</li>
-<li>The task based system has been completely revamped
 
-<ul>
-<li>Higher granularity increases reusability of tasks across providers</li>
-<li>Tasks are neatly organized into modules</li>
-<li>A task dependency graph is built to determine the execution order</li>
-</ul>
-</li>
-<li>Support for rollback actions if something fails</li>
-<li>Logfiles
-
-<ul>
-<li>All output from invoked subprocesses is logged</li>
-</ul>
-</li>
-</ul><h2>
+<h2>
 <a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
 
 <p>This is only a preview of the bootstrapper, so you can expect bugs and major architectural changes.
 Do not expect that the final version will look anything like this.</p>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/andsens">andsens</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+      {% include footer.html %}
     </div>
-    <script src="javascripts/scale.fix.js"></script>
-              <script type="text/javascript">
-            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-          </script>
-          <script type="text/javascript">
-            try {
-              var pageTracker = _gat._getTracker("UA-46783703-1");
-            pageTracker._trackPageview();
-            } catch(err) {}
-          </script>
-
+    {% include jsfooter.html %}
   </body>
 </html>
