@@ -1,4 +1,4 @@
 .bundle
-Gemfile
 Gemfile.lock
 _site
+.jekyll-assets-cache
