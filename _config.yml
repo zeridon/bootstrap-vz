@@ -1,6 +1,5 @@
 ---
 exclude: ['Gemfile', 'Gemfile.lock', 'taskoverview']
-markdown: 'redcarpet'
 assets:
   cache: true
   cachebust: soft

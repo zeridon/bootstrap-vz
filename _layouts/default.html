@@ -1,0 +1,48 @@
+---
+---
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="chrome=1">
+		<title>{{ page.title }}</title>
+		{% stylesheet styles %}
+		{% stylesheet pygment_trac %}
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+	</head>
+  <body>
+    <div class="wrapper">
+    	<header>
+				<h1>build-debian-cloud</h1>
+				<p>Script to create Debian images for Amazon EC2, Google Compute Engine and Virtualbox</p>
+
+				<nav>
+					<ul>
+						<li><a href="index.html">Introduction</a></li>
+						<li><a href="taskoverview.html">Taskoverview</a></li>
+					</ul>
+				</nav>
+
+				<p class="view"><a href="https://github.com/andsens/build-debian-cloud">View the Project on GitHub <small>andsens/build-debian-cloud</small></a></p>
+
+				<ul class="three-buttons">
+					<li><a href="https://github.com/andsens/build-debian-cloud/zipball/master">Download <strong>ZIP File</strong></a></li>
+					<li><a href="https://github.com/andsens/build-debian-cloud/tarball/master">Download <strong>TAR Ball</strong></a></li>
+					<li><a href="https://github.com/andsens/build-debian-cloud">View On <strong>GitHub</strong></a></li>
+				</ul>
+			</header>
+      <section>
+      {{ content }}
+      </section>
+	    <footer>
+				<p>This project is maintained by <a href="https://github.com/andsens">andsens</a></p>
+				<p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+			</footer>
+    </div>
+    {% javascript scale.fix %}
+		{% javascript analytics %}
+  </body>
+</html>
