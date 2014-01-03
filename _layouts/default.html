@@ -7,51 +7,28 @@
 		<meta http-equiv="X-UA-Compatible" content="chrome=1">
 		<title>{{ page.title }}</title>
 
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700">
 		<link rel="stylesheet/less" type="text/css" href="css/base.less">
-		<link rel="stylesheet/less" type="text/css" href="css/header.less">
-		<link rel="stylesheet" href="css/pygment_trac.css">
 		{% for href in page.less %}
 			<link rel="stylesheet/less" type="text/css" href="{{ href }}">
 		{% endfor %}
 
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.5.0/less.min.js"></script>
-		
-
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-		<!--[if lt IE 9]>
-		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-		<![endif]-->
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 	</head>
   <body class="{{ page.id }}">
-    <div class="wrapper">
-    	<header>
-				<h1>build-debian-cloud</h1>
-				<p>Script to create Debian images for Amazon EC2, Google Compute Engine and Virtualbox</p>
-
-				<nav>
-					<ul>
-						<li><a href="index.html">Introduction</a></li>
-						<li><a href="taskoverview.html">Taskoverview</a></li>
-					</ul>
-				</nav>
-
-				<p class="view"><a href="https://github.com/andsens/build-debian-cloud">View the Project on GitHub <small>andsens/build-debian-cloud</small></a></p>
-
-				<ul id="three-buttons">
-					<li><a href="https://github.com/andsens/build-debian-cloud/zipball/master">Download <strong>ZIP File</strong></a></li>
-					<li><a href="https://github.com/andsens/build-debian-cloud/tarball/master">Download <strong>TAR Ball</strong></a></li>
-					<li><a href="https://github.com/andsens/build-debian-cloud">View On <strong>GitHub</strong></a></li>
-				</ul>
-			</header>
-      <section>
+		<nav class="navbar navbar-default" role="navigation">
+			<ul class="nav navbar-nav">
+				<li><a href="index.html">Introduction</a></li>
+				<li><a href="taskoverview.html">Taskoverview</a></li>
+			</ul>
+		</nav>
+    <section class="container">
+    	<header><h1>{{ page.heading }}</h1></header>
       {{ content }}
-      </section>
-	    <footer>
-				<p>This project is maintained by <a href="https://github.com/andsens">andsens</a></p>
-				<p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-			</footer>
-    </div>
-		<script type="text/javascript" src="js/vendor/scale.fix.js"></script>
+    </section>
 		<script type="text/javascript" src="js/analytics.js"></script>
   </body>
 </html>
