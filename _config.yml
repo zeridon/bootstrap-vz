@@ -1,5 +1,2 @@
 ---
 exclude: ['Gemfile', 'Gemfile.lock', 'taskoverview']
-assets:
-  cache: true
-  cachebust: soft

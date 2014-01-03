@@ -1,0 +1,711 @@
+{
+    "phases": [
+        "Preparation",
+        "Volume creation",
+        "Volume preparation",
+        "Volume mounting",
+        "OS installation",
+        "Package installation",
+        "System modification",
+        "System cleaning",
+        "Volume unmounting",
+        "Image registration",
+        "Cleaning"
+    ],
+    "nodes": [
+        {
+            "phase": 0,
+            "name": "common.tasks.apt.AddDefaultSources"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.apt.AptClean"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.apt.AptUpdate"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.apt.AptUpgrade"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.apt.DisableDaemonAutostart"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.apt.EnableDaemonAutostart"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.apt.PurgeUnusedPackages"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.apt.WriteSources"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.boot.AddExtlinuxPackage"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.boot.AddGrubPackage"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.boot.BlackListModules"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.boot.DisableGetTTYs"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.boot.InstallExtLinux"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.boot.InstallGrub"
+        },
+        {
+            "phase": 4,
+            "name": "common.tasks.bootstrap.Bootstrap"
+        },
+        {
+            "phase": 4,
+            "name": "common.tasks.bootstrap.MakeTarball"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.cleanup.CleanTMP"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.cleanup.ClearMOTD"
+        },
+        {
+            "phase": 7,
+            "name": "common.tasks.cleanup.ShredHostkeys"
+        },
+        {
+            "phase": 10,
+            "name": "common.tasks.development.TriggerRollback"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.filesystem.AddXFSProgs"
+        },
+        {
+            "phase": 3,
+            "name": "common.tasks.filesystem.CreateBootMountDir"
+        },
+        {
+            "phase": 3,
+            "name": "common.tasks.filesystem.CreateMountDir"
+        },
+        {
+            "phase": 8,
+            "name": "common.tasks.filesystem.DeleteMountDir"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.filesystem.FStab"
+        },
+        {
+            "phase": 2,
+            "name": "common.tasks.filesystem.Format"
+        },
+        {
+            "phase": 3,
+            "name": "common.tasks.filesystem.MountBoot"
+        },
+        {
+            "phase": 3,
+            "name": "common.tasks.filesystem.MountRoot"
+        },
+        {
+            "phase": 4,
+            "name": "common.tasks.filesystem.MountSpecials"
+        },
+        {
+            "phase": 2,
+            "name": "common.tasks.filesystem.TuneVolumeFS"
+        },
+        {
+            "phase": 8,
+            "name": "common.tasks.filesystem.UnmountRoot"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.host.CheckHostDependencies"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.host.HostDependencies"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.initd.AddExpandRoot"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.initd.AddSSHKeyGeneration"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.initd.AdjustExpandRootScript"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.initd.InstallInitScripts"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.initd.RemoveHWClock"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.locale.GenerateLocale"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.locale.LocaleBootstrapPackage"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.locale.SetTimezone"
+        },
+        {
+            "phase": 1,
+            "name": "common.tasks.loopback.Create"
+        },
+        {
+            "phase": 9,
+            "name": "common.tasks.loopback.MoveImage"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.network.ConfigureNetworkIF"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.network.RemoveDNSInfo"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.network.RemoveHostname"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.packages.InstallLocalPackages"
+        },
+        {
+            "phase": 5,
+            "name": "common.tasks.packages.InstallRemotePackages"
+        },
+        {
+            "phase": 2,
+            "name": "common.tasks.partitioning.MapPartitions"
+        },
+        {
+            "phase": 2,
+            "name": "common.tasks.partitioning.PartitionVolume"
+        },
+        {
+            "phase": 8,
+            "name": "common.tasks.partitioning.UnmapPartitions"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.security.DisableSSHDNSLookup"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.security.DisableSSHPasswordAuthentication"
+        },
+        {
+            "phase": 6,
+            "name": "common.tasks.security.EnableShadowConfig"
+        },
+        {
+            "phase": 1,
+            "name": "common.tasks.volume.Attach"
+        },
+        {
+            "phase": 10,
+            "name": "common.tasks.volume.Delete"
+        },
+        {
+            "phase": 8,
+            "name": "common.tasks.volume.Detach"
+        },
+        {
+            "phase": 0,
+            "name": "common.tasks.workspace.CreateWorkspace"
+        },
+        {
+            "phase": 10,
+            "name": "common.tasks.workspace.DeleteWorkspace"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.admin_user.tasks.AddSudoPackage"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.admin_user.tasks.AdminUserCredentials"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.admin_user.tasks.CreateAdminUser"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.admin_user.tasks.DisableRootLogin"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.admin_user.tasks.PasswordlessSudo"
+        },
+        {
+            "phase": 10,
+            "name": "plugins.build_metadata.tasks.WriteMetadata"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.cloud_init.tasks.AddBackports"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.cloud_init.tasks.AddCloudInitPackages"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.cloud_init.tasks.DisableModules"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.cloud_init.tasks.SetMetadataSource"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.cloud_init.tasks.SetUsername"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.image_commands.tasks.ImageExecuteCommand"
+        },
+        {
+            "phase": 4,
+            "name": "plugins.minimize_size.tasks.AddFolderMounts"
+        },
+        {
+            "phase": 7,
+            "name": "plugins.minimize_size.tasks.RemoveFolderMounts"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.opennebula.tasks.OpenNebulaContext"
+        },
+        {
+            "phase": 5,
+            "name": "plugins.prebootstrapped.tasks.CopyImage"
+        },
+        {
+            "phase": 1,
+            "name": "plugins.prebootstrapped.tasks.CreateFromImage"
+        },
+        {
+            "phase": 1,
+            "name": "plugins.prebootstrapped.tasks.CreateFromSnapshot"
+        },
+        {
+            "phase": 5,
+            "name": "plugins.prebootstrapped.tasks.Snapshot"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.root_password.tasks.SetRootPassword"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.unattended_upgrades.tasks.AddUnattendedUpgradesPackage"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.unattended_upgrades.tasks.EnablePeriodicUpgrades"
+        },
+        {
+            "phase": 6,
+            "name": "plugins.vagrant.tasks.AddInsecurePublicKey"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.vagrant.tasks.AddPackages"
+        },
+        {
+            "phase": 0,
+            "name": "plugins.vagrant.tasks.CreateVagrantBoxDir"
+        },
+        {
+            "phase": 9,
+            "name": "plugins.vagrant.tasks.PackageBox"
+        },
+        {
+            "phase": 10,
+            "name": "plugins.vagrant.tasks.RemoveVagrantBoxDir"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.ami.AMIName"
+        },
+        {
+            "phase": 9,
+            "name": "providers.ec2.tasks.ami.BundleImage"
+        },
+        {
+            "phase": 9,
+            "name": "providers.ec2.tasks.ami.RegisterAMI"
+        },
+        {
+            "phase": 10,
+            "name": "providers.ec2.tasks.ami.RemoveBundle"
+        },
+        {
+            "phase": 9,
+            "name": "providers.ec2.tasks.ami.UploadImage"
+        },
+        {
+            "phase": 6,
+            "name": "providers.ec2.tasks.boot.ConfigurePVGrub"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.connection.Connect"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.connection.GetCredentials"
+        },
+        {
+            "phase": 1,
+            "name": "providers.ec2.tasks.ebs.Attach"
+        },
+        {
+            "phase": 1,
+            "name": "providers.ec2.tasks.ebs.Create"
+        },
+        {
+            "phase": 9,
+            "name": "providers.ec2.tasks.ebs.Snapshot"
+        },
+        {
+            "phase": 6,
+            "name": "providers.ec2.tasks.filesystem.S3FStab"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.host.GetInfo"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.host.HostDependencies"
+        },
+        {
+            "phase": 6,
+            "name": "providers.ec2.tasks.initd.AddEC2InitScripts"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.network.AddBuildEssentialPackage"
+        },
+        {
+            "phase": 6,
+            "name": "providers.ec2.tasks.network.EnableDHCPCDDNS"
+        },
+        {
+            "phase": 5,
+            "name": "providers.ec2.tasks.network.InstallEnhancedNetworking"
+        },
+        {
+            "phase": 0,
+            "name": "providers.ec2.tasks.packages.DefaultPackages"
+        },
+        {
+            "phase": 5,
+            "name": "providers.virtualbox.tasks.guest_additions.AddGuestAdditionsPackages"
+        },
+        {
+            "phase": 0,
+            "name": "providers.virtualbox.tasks.guest_additions.CheckGuestAdditionsPath"
+        },
+        {
+            "phase": 5,
+            "name": "providers.virtualbox.tasks.guest_additions.InstallGuestAdditions"
+        },
+        {
+            "phase": 0,
+            "name": "providers.virtualbox.tasks.packages.DefaultPackages"
+        }
+    ],
+    "vertices": [
+        {
+            "source": 38,
+            "target": 2
+        },
+        {
+            "source": 7,
+            "target": 2
+        },
+        {
+            "source": 2,
+            "target": 3
+        },
+        {
+            "source": 4,
+            "target": 3
+        },
+        {
+            "source": 0,
+            "target": 8
+        },
+        {
+            "source": 0,
+            "target": 9
+        },
+        {
+            "source": 3,
+            "target": 12
+        },
+        {
+            "source": 3,
+            "target": 13
+        },
+        {
+            "source": 15,
+            "target": 14
+        },
+        {
+            "source": 0,
+            "target": 20
+        },
+        {
+            "source": 27,
+            "target": 21
+        },
+        {
+            "source": 30,
+            "target": 23
+        },
+        {
+            "source": 21,
+            "target": 26
+        },
+        {
+            "source": 22,
+            "target": 27
+        },
+        {
+            "source": 14,
+            "target": 28
+        },
+        {
+            "source": 25,
+            "target": 29
+        },
+        {
+            "source": 30,
+            "target": 56
+        },
+        {
+            "source": 32,
+            "target": 31
+        },
+        {
+            "source": 33,
+            "target": 36
+        },
+        {
+            "source": 34,
+            "target": 36
+        },
+        {
+            "source": 36,
+            "target": 35
+        },
+        {
+            "source": 37,
+            "target": 36
+        },
+        {
+            "source": 41,
+            "target": 54
+        },
+        {
+            "source": 3,
+            "target": 46
+        },
+        {
+            "source": 46,
+            "target": 47
+        },
+        {
+            "source": 3,
+            "target": 47
+        },
+        {
+            "source": 49,
+            "target": 48
+        },
+        {
+            "source": 48,
+            "target": 25
+        },
+        {
+            "source": 30,
+            "target": 50
+        },
+        {
+            "source": 50,
+            "target": 56
+        },
+        {
+            "source": 55,
+            "target": 58
+        },
+        {
+            "source": 0,
+            "target": 59
+        },
+        {
+            "source": 36,
+            "target": 60
+        },
+        {
+            "source": 0,
+            "target": 66
+        },
+        {
+            "source": 65,
+            "target": 66
+        },
+        {
+            "source": 14,
+            "target": 71
+        },
+        {
+            "source": 72,
+            "target": 1
+        },
+        {
+            "source": 38,
+            "target": 73
+        },
+        {
+            "source": 47,
+            "target": 74
+        },
+        {
+            "source": 107,
+            "target": 74
+        },
+        {
+            "source": 75,
+            "target": 54
+        },
+        {
+            "source": 76,
+            "target": 94
+        },
+        {
+            "source": 47,
+            "target": 77
+        },
+        {
+            "source": 107,
+            "target": 77
+        },
+        {
+            "source": 0,
+            "target": 79
+        },
+        {
+            "source": 61,
+            "target": 81
+        },
+        {
+            "source": 0,
+            "target": 82
+        },
+        {
+            "source": 57,
+            "target": 83
+        },
+        {
+            "source": 85,
+            "target": 58
+        },
+        {
+            "source": 92,
+            "target": 86
+        },
+        {
+            "source": 96,
+            "target": 88
+        },
+        {
+            "source": 90,
+            "target": 88
+        },
+        {
+            "source": 89,
+            "target": 58
+        },
+        {
+            "source": 87,
+            "target": 90
+        },
+        {
+            "source": 93,
+            "target": 92
+        },
+        {
+            "source": 98,
+            "target": 92
+        },
+        {
+            "source": 95,
+            "target": 94
+        },
+        {
+            "source": 99,
+            "target": 31
+        },
+        {
+            "source": 100,
+            "target": 36
+        },
+        {
+            "source": 0,
+            "target": 101
+        },
+        {
+            "source": 0,
+            "target": 104
+        },
+        {
+            "source": 105,
+            "target": 47
+        },
+        {
+            "source": 47,
+            "target": 107
+        },
+        {
+            "source": 0,
+            "target": 108
+        }
+    ]
+}

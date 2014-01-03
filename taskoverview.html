@@ -1,9 +1,16 @@
 ---
 layout: default
+id: taskoverview
 title: "Taskoverview: build-debian-cloud"
+less:
+- css/taskoverview.less
 ---
-<section id="overview">
-</section>
-{% stylesheet taskoverview %}
-{% javascript d3.v3 %}
-{% javascript taskoverview %}
+<h1>
+Task overview graph</h1>
+<svg id="taskoverview-graph"></svg>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+<script type="text/coffeescript" src="js/taskoverview.coffee"></script>
+<script type="text/coffeescript">
+	overview = new window.TaskOverview selector: '#taskoverview-graph'
+</script>

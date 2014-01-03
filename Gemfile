@@ -1,6 +1,2 @@
 source 'https://rubygems.org'
 gem 'github-pages'
-gem 'jekyll-assets'
-gem 'coffee-script'
-gem 'less'
-gem 'therubyracer'
