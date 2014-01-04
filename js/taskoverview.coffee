@@ -1,9 +1,11 @@
 class window.TaskOverview
 	viewBoxWidth = 800
 	viewBoxHeight = 400
-	arrowWidth = 6
-	arrowHeight = 4
-	nodeRadius = 5
+	margins =
+		top:    0
+		left:   100
+		bottom: 10
+		right:  100
 
 	length = ({x,y}) -> Math.sqrt(x*x + y*y)
 	sum = ({x:x1,y:y1}, {x:x2,y:y2}) -> {x:x1+x2, y:y1+y2}
@@ -21,53 +23,134 @@ class window.TaskOverview
 	constructor: ({@selector}) ->
 		@svg = d3.select(@selector)
 			.attr('viewBox', "0 0 #{viewBoxWidth} #{viewBoxHeight}")
-
 		d3.json 'data/graph.json', @buildGraph
 
-	buildGraph: (error, graph) =>
-		@definitions = @svg.append 'defs'
-		arrow = @definitions.append('marker')
+	buildGraph: (error, @data) =>
+		@createDefinitions()
+		taskLayout = @createNodes()
+		taskLayout.start()
+
+	createDefinitions: () ->
+		definitions = @svg.append 'defs'
+		arrow = definitions.append('marker')
 		arrow.attr('id', 'right-arrowhead')
-			.attr('refX', arrowHeight)
-			.attr('refY', arrowWidth/2)
-			.attr('markerWidth', arrowHeight)
+			.attr('refX', arrowHeight = 4)
+			.attr('refY', 	(arrowWidth = 6) / 2)
+			.attr('markerWidth', 	arrowHeight)
 			.attr('markerHeight', arrowWidth)
 			.attr('orient', 'auto')
 		  .append('path').attr('d', "M0,0 V#{arrowWidth} L#{arrowHeight},#{arrowWidth/2} Z")
-		@markers = arrow: arrow
 
-		@layout = d3.layout.force()
-			.linkDistance(30)
-			.size([viewBoxWidth, viewBoxHeight])
+	partitionKey = 'phase'
+	nodeColorKey = 'module'
 
-		@layout.nodes(graph.tasks.nodes)
-		@layout.links(graph.tasks.links)
-		@layout.start()
+	nodeRadius = 10
+	nodePadding = 10
+	createNodes: () ->
+		options =
+			gravity:      0
+			linkDistance: 30
+			linkStrength: .4
+			charge:       -80
+			size:         [viewBoxWidth, viewBoxHeight]
 
-		@nodes = @svg.append('g').attr('class', 'tasks')
-		                         .selectAll('circle.node').data(@layout.nodes())
-		                         .enter().append('circle').attr('class', 'node')
-		@nodes.attr('r', nodeRadius)
-			    .call(@layout.drag)
+		layout = d3.layout.force()
+		layout[option](value) for option, value of options
 
-		@labels = @svg.append('g').attr('class', 'tasks')
-		                         .selectAll('text.label').data(@layout.nodes())
-		                         .enter().append('text').attr('class', 'label')
-		@labels.text (d) -> d.name
+		sum = (list) -> list.reduce(((a,b) -> a + b), 0)
+		partitioning =
+			widths: do =>
+				ratios = for _, i in @data[partitionKey+'s']
+					Math.sqrt (task for task in @data.nodes when task[partitionKey] is i).length
+				parts = (viewBoxWidth - margins.left - margins.right) / (sum ratios)
+				widths = []
+				for _, i in @data[partitionKey+'s']
+					widths.push parts * ratios[i]
+				return widths
+			offset: (i) ->
+				margins.left + sum @widths.slice(0, i)
 
-		@links = @svg.append('g').attr('class', 'tasks')
-		                         .selectAll('line.link').data(@layout.links())
-		                         .enter().append('line').attr('class', 'link')
-		@links.attr('marker-end', 'url(#right-arrowhead)')
+		nodelist = for node in @data.nodes
+			$.extend
+				cx:     partitioning.offset(node[partitionKey]) + partitioning.widths[node[partitionKey]] / 2
+				cy:     viewBoxHeight / 2 + margins.top
+				radius: nodeRadius
+				, node
 
-		@layout.on 'tick', @tick
+		layout.nodes(nodelist)
 
-	tick: =>
-		@nodes.attr('cx', (d) -> d.x)
-					.attr('cy', (d) -> d.y)
-		@labels.attr('x', (d) -> d.x)
-					 .attr('y', (d) -> d.y)
-		@links.attr('x1', ({source,target}) -> source.x + scale(free([source,target]), nodeRadius).x)
-		      .attr('y1', ({source,target}) -> source.y + scale(free([source,target]), nodeRadius).y)
-		      .attr('x2', ({source,target}) -> target.x - scale(free([source,target]), nodeRadius).x)
-		      .attr('y2', ({source,target}) -> target.y - scale(free([source,target]), nodeRadius).y)
+		layout.links @data.links
+
+		groups = d3.nest().key((d) -> d[partitionKey])
+		                  .sortKeys(d3.ascending)
+		                  .entries(nodelist)
+
+		# svg
+		# 	g.links
+		# 		line
+		# 	g.nodes
+		# 		g.partition
+		# 			path
+		# 			g.tasks
+		# 				circle
+		# 			g.labels
+		#					text
+		# 		g.partition
+		# 		...
+
+		hullColors = d3.scale.category20()
+		nodeColors = d3.scale.category20c()
+
+		partitions = @svg.append('g').attr('class', 'nodes')
+		                 .selectAll('g.partition').data(groups).enter()
+		                 .append('g').attr('class', 'partition')
+
+		hulls = partitions.append('path').attr('class', 'hull')
+		                                 .style('fill', (d, i) -> hullColors(i))
+		                                 .style('stroke', (d, i) -> hullColors(i))
+
+		links = @svg.append('g').attr('class', 'links')
+		            .selectAll('line').data(layout.links()).enter()
+		            .append('line').attr('marker-end', 'url(#right-arrowhead)')
+
+		nodes = partitions.append('g').attr('class', 'tasks').data(groups)
+		                  .selectAll('circle').data((d) -> d.values).enter()
+		                  .append('circle').attr('r', (d) -> d.radius)
+		                                   .style('fill', (d, i) -> nodeColors(d[nodeColorKey]))
+		                                   .call(layout.drag)
+		                                   .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true )
+		                                   .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false )
+
+		labels = partitions.append('g').attr('class', 'labels').data(groups)
+		                   .selectAll('text').data((d) -> d.values).enter()
+		                   .append('text').text((d) -> d.name)
+		                                  .attr('transform', (d) -> offset=-(d.radius + 5); "translate(0,#{offset})")
+
+
+		hullBoundaries = (d) ->
+			lines = d3.geom.hull(d.values.map((i) -> [i.x, i.y])).join("L")
+			"M#{lines}Z"
+
+		gravity = (alphax, alphay) =>
+			(d) ->
+				d.x += (d.cx - d.x) * alphax
+				d.y += (d.cy - d.y) * alphay
+
+		layout.on 'tick', (e) =>
+			hulls.attr('d', hullBoundaries)
+			nodes.each gravity(.2 * e.alpha, .08 * e.alpha)
+			nodes.attr
+				cx: ({x}) -> x
+				cy: ({y}) -> y
+			labels.each gravity(.2 * e.alpha, .08 * e.alpha)
+			labels.attr
+				x: ({x}) -> x
+				y: ({y}) -> y
+			links.each ({source, target}, i) ->
+				shrinkBy = scale(free([source,target]), nodeRadius)
+				@setAttribute 'x1', source.x + shrinkBy.x
+				@setAttribute 'y1', source.y + shrinkBy.y
+				@setAttribute 'x2', target.x - shrinkBy.x
+				@setAttribute 'y2', target.y - shrinkBy.y
+
+		return layout

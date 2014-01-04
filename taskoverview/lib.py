@@ -7,62 +7,51 @@ def main(opts):
 	classes = walk_classes([opts['PATH']])
 
 	from common import phases
-	phase_links = [{'source': phases.order[i],
-	                'target': phases.order[i+1],
-	                } for i in range(0, len(phases.order)-2)]
-
 	from base import Task
-	task_nodes = filter(lambda obj: issubclass(obj, Task) and obj is not Task, classes)
+	tasks = filter(lambda obj: issubclass(obj, Task) and obj is not Task, classes)
+
+	def distinct(seq):
+		seen = set()
+		return [x for x in seq if x not in seen and not seen.add(x)]
+	modules = distinct([task.__module__ for task in tasks])
 	task_links = []
 	task_links.extend([{'source': task,
 	                    'target': succ,
 	                    'definer': task,
 	                    }
-	                   for task in task_nodes
+	                   for task in tasks
 	                   for succ in task.successors])
 	task_links.extend([{'source': pre,
 	                    'target': task,
 	                    'definer': task,
 	                    }
-	                   for task in task_nodes
+	                   for task in tasks
 	                   for pre in task.predecessors])
 
-	data = {'phases': {'nodes': phases.order,
-	                   'links': phase_links,
-	                   },
-	        'tasks': {'nodes': task_nodes,
-	                  'links': task_links,
-	                  }
-	        }
-
-	def mk_lookup(data, *keys):
-		def lookup(obj):
-			for key in keys:
-				obj[key] = data.index(obj[key])
-			return obj
-		return lookup
-
-	data['phases']['links'] = map(mk_lookup(data['phases']['nodes'], 'source', 'target'),
-	                              data['phases']['links'])
-	data['tasks']['links'] = map(mk_lookup(data['tasks']['nodes'], 'source', 'target', 'definer'),
-	                             data['tasks']['links'])
-
-	def create_task_node(task):
-		return {'name': task.__name__,
-		        'module': task.__module__,
-		        'phase': task.phase,
-		        }
-
-	data['tasks']['nodes'] = map(create_task_node, data['tasks']['nodes'])
-	data['tasks']['nodes'] = map(mk_lookup(data['phases']['nodes'], 'phase'),
-	                             data['tasks']['nodes'])
-
-	def create_phase_node(phase):
+	def mk_phase(phase):
 		return {'name': phase.name,
 		        'description': phase.description,
 		        }
 
-	data['phases']['nodes'] = map(create_phase_node, data['phases']['nodes'])
+	def mk_module(module):
+		return {'name': module,
+		        }
+
+	def mk_node(task):
+		return {'name': task.__name__,
+		        'module': modules.index(task.__module__),
+		        'phase': (i for i, phase in enumerate(phases.order) if phase is task.phase).next(),
+		        }
+
+	def mk_link(link):
+		for key in ['source', 'target', 'definer']:
+			link[key] = tasks.index(link[key])
+		return link
+
+	data = {'phases': map(mk_phase, phases.order),
+	        'modules': map(mk_module, modules),
+	        'nodes': map(mk_node, tasks),
+	        'links': map(mk_link, task_links)}
 
 	write_data(data, opts.get('--output', None))
 

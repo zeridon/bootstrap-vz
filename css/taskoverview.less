@@ -1,19 +1,42 @@
+// svg
+	// g.nodes
+		// g.phase
+			// path
+			// g.tasks
+				// g.task
+					// circle
+					// text
+		// g.phase
+		// ...
+	// g.links
+		// line
 #taskoverview-graph {
-	.tasks {
-		circle.node {
-			stroke: #fff;
+	.nodes {
+		path.hull {
+			opacity: 0.25;
+			stroke-linejoin: round;
+			stroke-width: 50;
+		}
+		g.tasks circle {
+			stroke: #000000;
+			opacity: .9;
 			stroke-width: 1.5px;
-			text {
-				pointer-events: none;
-				font: 10px sans-serif;
+		}
+		g.labels text {
+			pointer-events: none;
+			font: 10px sans-serif;
+			text-anchor: middle;
+			text-shadow: 0 0 2px #FFFFFF;
+			font-weight: bold;
+			opacity: 0;
+			&.hover {
+				transition: opacity .5s;
+				opacity: .9;
 			}
 		}
-		text.label {
-			// font-size: 11px;
-		}
-		line.link {
-			stroke: #999;
-			stroke-opacity: .6;
-		}
+	}
+	.links line {
+		stroke: #999;
+		stroke-opacity: .6;
 	}
 }
