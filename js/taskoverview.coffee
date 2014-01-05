@@ -7,11 +7,11 @@ class window.TaskOverview
 		bottom: 10
 		right:  100
 
-	length = ({x,y}) -> Math.sqrt(x*x + y*y)
-	sum = ({x:x1,y:y1}, {x:x2,y:y2}) -> {x:x1+x2, y:y1+y2}
-	diff = ({x:x1,y:y1}, {x:x2,y:y2}) -> {x:x1-x2, y:y1-y2}
-	prod = ({x,y}, scalar) -> {x:x*scalar, y:y*scalar}
-	div = ({x,y}, scalar) -> {x:x/scalar, y:y/scalar}
+	length = ([x,y]) -> Math.sqrt(x*x + y*y)
+	sum = ([x1,y1], [x2,y2]) -> [x1+x2, y1+y2]
+	diff = ([x1,y1], [x2,y2]) -> [x1-x2, y1-y2]
+	prod = ([x,y], scalar) -> [x*scalar, y*scalar]
+	div = ([x,y], scalar) -> [x/scalar, y/scalar]
 	unit = (vector) -> div(vector, length(vector))
 	scale = (vector, scalar) -> prod(unit(vector), scalar)
 	position = (coord, vector) -> [coord, sum(coord, vector)]
@@ -44,6 +44,12 @@ class window.TaskOverview
 	partitionKey = 'phase'
 	nodeColorKey = 'module'
 
+	keyMap:
+		phase: 'phases'
+		module: 'modules'
+	partition: (key, idx) ->
+		return @data[@keyMap[key]]
+
 	nodeRadius = 10
 	nodePadding = 10
 	createNodes: () ->
@@ -51,24 +57,24 @@ class window.TaskOverview
 			gravity:      0
 			linkDistance: 30
 			linkStrength: .4
-			charge:       -80
+			charge:       -120
 			size:         [viewBoxWidth, viewBoxHeight]
 
 		layout = d3.layout.force()
 		layout[option](value) for option, value of options
 
-		sum = (list) -> list.reduce(((a,b) -> a + b), 0)
+		array_sum = (list) -> list.reduce(((a,b) -> a + b), 0)
 		partitioning =
 			widths: do =>
-				ratios = for _, i in @data[partitionKey+'s']
+				ratios = for _, i in @partition(partitionKey)
 					Math.sqrt (task for task in @data.nodes when task[partitionKey] is i).length
-				parts = (viewBoxWidth - margins.left - margins.right) / (sum ratios)
+				parts = (viewBoxWidth - margins.left - margins.right) / (array_sum ratios)
 				widths = []
-				for _, i in @data[partitionKey+'s']
+				for _, i in @partition(partitionKey)
 					widths.push parts * ratios[i]
 				return widths
 			offset: (i) ->
-				margins.left + sum @widths.slice(0, i)
+				margins.left + array_sum @widths.slice(0, i)
 
 		nodelist = for node in @data.nodes
 			$.extend
@@ -85,51 +91,61 @@ class window.TaskOverview
 		                  .sortKeys(d3.ascending)
 		                  .entries(nodelist)
 
-		# svg
-		# 	g.links
-		# 		line
-		# 	g.nodes
-		# 		g.partition
-		# 			path
-		# 			g.tasks
-		# 				circle
-		# 			g.labels
-		#					text
-		# 		g.partition
-		# 		...
-
 		hullColors = d3.scale.category20()
 		nodeColors = d3.scale.category20c()
 
-		partitions = @svg.append('g').attr('class', 'nodes')
-		                 .selectAll('g.partition').data(groups).enter()
-		                 .append('g').attr('class', 'partition')
-
-		hulls = partitions.append('path').attr('class', 'hull')
-		                                 .style('fill', (d, i) -> hullColors(i))
-		                                 .style('stroke', (d, i) -> hullColors(i))
+		hulls = @svg.append('g').attr('class', 'hulls')
+		            .selectAll('path').data(groups).enter()
+		            .append('path').attr('id', (d) -> "hull-#{d.key}")
+		                           .style
+		                             'fill': (d, i) -> hullColors(i)
+		                             'stroke': (d, i) -> hullColors(i)
+		                             'stroke-linejoin': 'round'
+		                             'stroke-width': 20
+		
+		hullLabels = @svg.append('g').attr('class', 'hull-labels')
+		                 .selectAll('text').data(groups).enter()
+		                 .append('text') #.attr('transform', 'translate(-40,0)')
+		hullLabels.append('textPath').attr('xlink:href', (d) -> "#hull-#{d.key}")
+		                             .text((d) => @partition(partitionKey)[d.key].name)
 
 		links = @svg.append('g').attr('class', 'links')
 		            .selectAll('line').data(layout.links()).enter()
 		            .append('line').attr('marker-end', 'url(#right-arrowhead)')
 
-		nodes = partitions.append('g').attr('class', 'tasks').data(groups)
-		                  .selectAll('circle').data((d) -> d.values).enter()
-		                  .append('circle').attr('r', (d) -> d.radius)
-		                                   .style('fill', (d, i) -> nodeColors(d[nodeColorKey]))
-		                                   .call(layout.drag)
-		                                   .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true )
-		                                   .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false )
+		nodes = @svg.append('g').attr('class', 'nodes')
+		            .selectAll('g.partition').data(groups).enter()
+		            .append('g').attr('class', 'partition')
+		            .selectAll('circle').data((d) -> d.values).enter()
+		            .append('circle').attr('r', (d) -> d.radius)
+		                             .style('fill', (d, i) -> nodeColors(d[nodeColorKey]))
+		                             .call(layout.drag)
+		                             .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true )
+		                             .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false )
 
-		labels = partitions.append('g').attr('class', 'labels').data(groups)
-		                   .selectAll('text').data((d) -> d.values).enter()
-		                   .append('text').text((d) -> d.name)
-		                                  .attr('transform', (d) -> offset=-(d.radius + 5); "translate(0,#{offset})")
+		labels = @svg.append('g').attr('class', 'node-labels')
+		             .selectAll('g.partition').data(groups).enter()
+		             .append('g').attr('class', 'partition')
+		             .selectAll('text').data((d) -> d.values).enter()
+		             .append('text').text((d) -> d.name)
+		                            .attr('transform', (d) -> offset=-(d.radius + 5); "translate(0,#{offset})")
 
 
+		unit_coords = [[-1,-1], [0,-1], [1,-1],
+		               [-1, 0], [0, 0], [1, 0],
+		               [-1, 1], [0, 1], [1, 1]]
+		hullPointMatrix = (prod(v, nodeRadius*2) for v in unit_coords)
 		hullBoundaries = (d) ->
-			lines = d3.geom.hull(d.values.map((i) -> [i.x, i.y])).join("L")
-			"M#{lines}Z"
+			nodePoints = d.values.map (i) -> [i.x, i.y]
+			padded_points = []
+			padded_points.push sum(p, v) for v in hullPointMatrix for p in nodePoints
+			points = d3.geom.hull(padded_points)
+			# curvePoints = points.slice(1, points.length-(points.length-1)%2)
+			# pairs = []
+			# pairs.push(curvePoints.slice(i, i+2).join(' ')) for _, i in curvePoints by 2
+			# curves = pairs.join('Q')
+			# "M#{points[0]}Q#{curves}Z"
+			"M#{points.join('L')}Z"
 
 		gravity = (alphax, alphay) =>
 			(d) ->
@@ -146,11 +162,11 @@ class window.TaskOverview
 			labels.attr
 				x: ({x}) -> x
 				y: ({y}) -> y
-			links.each ({source, target}, i) ->
-				shrinkBy = scale(free([source,target]), nodeRadius)
-				@setAttribute 'x1', source.x + shrinkBy.x
-				@setAttribute 'y1', source.y + shrinkBy.y
-				@setAttribute 'x2', target.x - shrinkBy.x
-				@setAttribute 'y2', target.y - shrinkBy.y
+			links.each ({source:{x:x1,y:y1},target:{x:x2,y:y2}}, i) ->
+				[x,y] = scale(free([[x1,y1], [x2,y2]]), nodeRadius)
+				@setAttribute 'x1', x1 + x
+				@setAttribute 'y1', y1 + y
+				@setAttribute 'x2', x2 - x
+				@setAttribute 'y2', y2 - y
 
 		return layout
