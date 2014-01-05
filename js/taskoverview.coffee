@@ -1,11 +1,14 @@
 class window.TaskOverview
-	viewBoxWidth = 800
-	viewBoxHeight = 400
+	viewBoxHeight = 800
+	viewBoxWidth = 200
 	margins =
-		top:    0
-		left:   100
-		bottom: 10
-		right:  100
+		top:    100
+		left:   50
+		bottom: 100
+		right:  50
+	gravity =
+		lateral: .1
+		longitudinal: .2
 
 	length = ([x,y]) -> Math.sqrt(x*x + y*y)
 	sum = ([x1,y1], [x2,y2]) -> [x1+x2, y1+y2]
@@ -65,31 +68,35 @@ class window.TaskOverview
 
 		array_sum = (list) -> list.reduce(((a,b) -> a + b), 0)
 		partitioning =
-			widths: do =>
-				ratios = for _, i in @partition(partitionKey)
-					Math.sqrt (task for task in @data.nodes when task[partitionKey] is i).length
-				parts = (viewBoxWidth - margins.left - margins.right) / (array_sum ratios)
-				widths = []
-				for _, i in @partition(partitionKey)
-					widths.push parts * ratios[i]
-				return widths
-			offset: (i) ->
-				margins.left + array_sum @widths.slice(0, i)
+			nonLinear: (groupCounts, range) ->
+				ratios = (Math.sqrt count for count in groupCounts)
+				fraction = range / (array_sum ratios)
+				return (fraction * ratio for ratio in ratios)
+			linear: (groups, range) ->
+				fraction = range / groups
+				return (fraction for _ in [0..groups])
+			offset: (ranges, i) -> (array_sum ranges.slice 0, i) + ranges[i] / 2
 
-		nodelist = for node in @data.nodes
-			$.extend
-				cx:     partitioning.offset(node[partitionKey]) + partitioning.widths[node[partitionKey]] / 2
-				cy:     viewBoxHeight / 2 + margins.top
-				radius: nodeRadius
-				, node
-
-		layout.nodes(nodelist)
-
+		layout.nodes @data.nodes
 		layout.links @data.links
+
+		grouping = d3.nest().key((d) -> d[partitionKey]).sortKeys(d3.ascending)
+
+		widths = partitioning.nonLinear((d.values for d in grouping.rollup((d) -> d.length).entries(@data.nodes)),
+		                                viewBoxWidth - margins.left - margins.right)
+		heights = partitioning.nonLinear((d.values for d in grouping.rollup((d) -> d.length).entries(@data.nodes)),
+		                                 viewBoxHeight - margins.top - margins.bottom)
+		for node in @data.nodes
+			# node.cx = margins.left + partitioning.offset(widths, node[partitionKey])
+			# node.cy = viewBoxHeight / 2 + margins.top
+			node.cx = viewBoxWidth / 2 + margins.left
+			node.cy = margins.top + partitioning.offset(heights, node[partitionKey])
+			node.radius = nodeRadius
+
 
 		groups = d3.nest().key((d) -> d[partitionKey])
 		                  .sortKeys(d3.ascending)
-		                  .entries(nodelist)
+		                  .entries(layout.nodes())
 
 		hullColors = d3.scale.category20()
 		nodeColors = d3.scale.category20c()
@@ -100,13 +107,12 @@ class window.TaskOverview
 		                           .style
 		                             'fill': (d, i) -> hullColors(i)
 		                             'stroke': (d, i) -> hullColors(i)
-		                             'stroke-linejoin': 'round'
-		                             'stroke-width': 20
 		
 		hullLabels = @svg.append('g').attr('class', 'hull-labels')
 		                 .selectAll('text').data(groups).enter()
-		                 .append('text') #.attr('transform', 'translate(-40,0)')
+		                 .append('text')
 		hullLabels.append('textPath').attr('xlink:href', (d) -> "#hull-#{d.key}")
+		                             # .attr('startOffset', '200')
 		                             .text((d) => @partition(partitionKey)[d.key].name)
 
 		links = @svg.append('g').attr('class', 'links')
@@ -120,8 +126,8 @@ class window.TaskOverview
 		            .append('circle').attr('r', (d) -> d.radius)
 		                             .style('fill', (d, i) -> nodeColors(d[nodeColorKey]))
 		                             .call(layout.drag)
-		                             .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true )
-		                             .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false )
+		                             .on('mouseover', (d) -> (labels.filter (l) -> d is l).classed 'hover', true)
+		                             .on('mouseout', (d) -> (labels.filter (l) -> d is l).classed 'hover', false)
 
 		labels = @svg.append('g').attr('class', 'node-labels')
 		             .selectAll('g.partition').data(groups).enter()
@@ -130,35 +136,35 @@ class window.TaskOverview
 		             .append('text').text((d) -> d.name)
 		                            .attr('transform', (d) -> offset=-(d.radius + 5); "translate(0,#{offset})")
 
-
-		unit_coords = [[-1,-1], [0,-1], [1,-1],
-		               [-1, 0], [0, 0], [1, 0],
-		               [-1, 1], [0, 1], [1, 1]]
-		hullPointMatrix = (prod(v, nodeRadius*2) for v in unit_coords)
+		rotate = (x, n) ->
+			n = n % x.length
+			x.slice(0,-n).reverse().concat(x.slice(-n).reverse()).reverse()
+		circle_coords = (parts) ->
+			partSize = 2*Math.PI/parts
+			return (for i in [0..parts]
+			        theta = partSize*i
+			        [(Math.cos theta), (Math.sin theta)])
+		hullPointMatrix = (prod(v, nodeRadius*2) for v in circle_coords(16))
 		hullBoundaries = (d) ->
 			nodePoints = d.values.map (i) -> [i.x, i.y]
 			padded_points = []
 			padded_points.push sum(p, v) for v in hullPointMatrix for p in nodePoints
 			points = d3.geom.hull(padded_points)
-			# curvePoints = points.slice(1, points.length-(points.length-1)%2)
-			# pairs = []
-			# pairs.push(curvePoints.slice(i, i+2).join(' ')) for _, i in curvePoints by 2
-			# curves = pairs.join('Q')
-			# "M#{points[0]}Q#{curves}Z"
+			points = rotate points, Math.floor -points.length / 3
 			"M#{points.join('L')}Z"
 
-		gravity = (alphax, alphay) =>
+		gravity_fn = (alpha) =>
 			(d) ->
-				d.x += (d.cx - d.x) * alphax
-				d.y += (d.cy - d.y) * alphay
+				d.x += (d.cx - d.x) * alpha * gravity.lateral
+				d.y += (d.cy - d.y) * alpha * gravity.longitudinal
 
 		layout.on 'tick', (e) =>
 			hulls.attr('d', hullBoundaries)
-			nodes.each gravity(.2 * e.alpha, .08 * e.alpha)
+			nodes.each gravity_fn(e.alpha)
 			nodes.attr
 				cx: ({x}) -> x
 				cy: ({y}) -> y
-			labels.each gravity(.2 * e.alpha, .08 * e.alpha)
+			labels.each gravity_fn(e.alpha)
 			labels.attr
 				x: ({x}) -> x
 				y: ({y}) -> y
