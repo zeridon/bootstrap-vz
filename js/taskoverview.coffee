@@ -68,8 +68,8 @@ class window.TaskOverview
 
 		array_sum = (list) -> list.reduce(((a,b) -> a + b), 0)
 		partitioning =
-			nonLinear: (groupCounts, range) ->
-				ratios = (Math.sqrt count for count in groupCounts)
+			nonLinear: (groupCounts, range, k=2) ->
+				ratios = (Math.pow(count, 1/k) for count in groupCounts)
 				fraction = range / (array_sum ratios)
 				return (fraction * ratio for ratio in ratios)
 			linear: (groups, range) ->
@@ -85,7 +85,7 @@ class window.TaskOverview
 		widths = partitioning.nonLinear((d.values for d in grouping.rollup((d) -> d.length).entries(@data.nodes)),
 		                                viewBoxWidth - margins.left - margins.right)
 		heights = partitioning.nonLinear((d.values for d in grouping.rollup((d) -> d.length).entries(@data.nodes)),
-		                                 viewBoxHeight - margins.top - margins.bottom)
+		                                 viewBoxHeight - margins.top - margins.bottom, 4)
 		for node in @data.nodes
 			# node.cx = margins.left + partitioning.offset(widths, node[partitionKey])
 			# node.cy = viewBoxHeight / 2 + margins.top
@@ -112,7 +112,6 @@ class window.TaskOverview
 		                 .selectAll('text').data(groups).enter()
 		                 .append('text')
 		hullLabels.append('textPath').attr('xlink:href', (d) -> "#hull-#{d.key}")
-		                             # .attr('startOffset', '200')
 		                             .text((d) => @partition(partitionKey)[d.key].name)
 
 		links = @svg.append('g').attr('class', 'links')
@@ -150,7 +149,7 @@ class window.TaskOverview
 			padded_points = []
 			padded_points.push sum(p, v) for v in hullPointMatrix for p in nodePoints
 			points = d3.geom.hull(padded_points)
-			points = rotate points, Math.floor -points.length / 3
+			points = rotate points, Math.floor -points.length / 2.5
 			"M#{points.join('L')}Z"
 
 		gravity_fn = (alpha) =>
