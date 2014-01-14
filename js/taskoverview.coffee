@@ -58,9 +58,9 @@ class window.TaskOverview
 	createNodes: () ->
 		options =
 			gravity:      0
-			linkDistance: 30
-			linkStrength: .4
-			charge:       -120
+			linkDistance: 50
+			linkStrength: .8
+			charge:       -130
 			size:         [viewBoxWidth, viewBoxHeight]
 
 		layout = d3.layout.force()
