@@ -1,0 +1,20 @@
+---
+layout: default
+id: manifest
+title: Development guidelines
+heading: The manifest file
+---
+
+They should only be deviated from when it is impossible to achieve the desired functionality
+
+The manifest should always fully describe the resulting image, the outcome should never depend on settings specified elsewhere
+The bootstrapper should always be able to run fully unattended
+The bootstrapper should only need as much setup as the manifest requires such as credentials or the path to VirtualBox guest additions (host package dependencies are an exception)
+
+Roll complexity into which tasks are added to the tasklist
+Control flow should be directed from the task graph, avoid creating complicated run() functions (if necessary, split up a function into two tasks)
+Task classes should be treated as decorated run() functions, they should not have any state
+Only add stuff to the BootstrapInformation object when really necessary (avoid clutter)
+If a run() function checks whether it should do any work or simply be skipped, consider doing that check in resolve_tasks() instead and remove the task alltogether
+
+Use the manifest-schema to check for allowed settings as long as the checks are simple (fall back to doing the check in python when that solution is considerably less complex)
