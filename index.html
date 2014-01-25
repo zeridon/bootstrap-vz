@@ -7,16 +7,14 @@ heading: build-debian-cloud python version (preview)
 <p>This is a preview of the build-debian-cloud python version.<br>
 It currently only supports EBS booted volumes and none of the plugins have been ported.</p>
 
-<h2>
-<a name="suggestions" class="anchor" href="#suggestions"><span class="octicon octicon-link"></span></a>Suggestions</h2>
+<h2 id="suggestions">Suggestions</h2>
 
 <p>The reason I release this preview is to get as many suggestions as possible.
 If you have an idea for how to improve upon the architecture or
 simply spotted a bug, please feel free to file a bug report.
 Pull requests are also welcome!</p>
 
-<h2>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+<h2 id="dependencies">Dependencies</h2>
 
 <p>You will need to run debian wheezy with <strong>python 2.7</strong> and <strong>debootstrap</strong> installed.
 Other depencies include:</p>
@@ -37,8 +35,7 @@ Other depencies include:</p>
 
 <p>Bootstrapping instance store AMIs requires <strong>euca2ools</strong> to be installed.</p>
 
-<h2>
-<a name="highlights" class="anchor" href="#highlights"><span class="octicon octicon-link"></span></a>Highlights</h2>
+<h2 id="highlights">Highlights</h2>
 
 <ul>
 	<li>The desired image is configured entirely via a JSON manifest file
@@ -63,8 +60,7 @@ Other depencies include:</p>
 	</li>
 </ul>
 
-<h2>
-<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+<h2 id="disclaimer">Disclaimer</h2>
 
 <p>This is only a preview of the bootstrapper, so you can expect bugs and major architectural changes.
 Do not expect that the final version will look anything like this.</p>

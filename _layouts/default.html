@@ -17,18 +17,37 @@
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.5.0/less.min.js"></script>
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 		<script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+		<script type="text/coffeescript">
+			$ ->
+				headings = ($ 'h2[id]')
+				if headings.length > 1
+					headings.each (i) ->
+						$h = $ @
+						li = ($ '#heading-nav ul').append $ "<li><a href=\"##{$h.attr 'id'}\">#{$h.text()}</a></li>"
+						li.addClass 'active' if i is 0
+		</script>
 	</head>
-  <body class="{{ page.id }}">
-		<nav class="navbar navbar-default" role="navigation">
-			<ul class="nav navbar-nav">
-				<li><a href="index.html">Introduction</a></li>
-				<li><a href="taskoverview.html">Taskoverview</a></li>
-			</ul>
-		</nav>
-    <section class="container">
-    	<header><h1>{{ page.heading }}</h1></header>
-      {{ content }}
-    </section>
+  <body class="{{ page.id }}" data-spy="scroll" data-target="#heading-nav">
+		<div class="container">
+			<div class="row">
+				<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+					<ul class="nav navbar-nav">
+						<li><a href="index.html">Introduction</a></li>
+						<li><a href="taskoverview.html">Taskoverview</a></li>
+					</ul>
+				</nav>
+			</div>
+			<main class="row">
+				<aside class="col-lg-2 col-md-2 col-sm-0" id="heading-nav">
+					<ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="200"></ul>
+				</aside>
+				<section class="col-lg-10 col-md-10 col-sm-12">
+		    	<header><h1>{{ page.heading }}</h1></header>
+		      {{ content }}
+				</section>
+			</main>
+		</div>
 		<script type="text/javascript" src="js/analytics.js"></script>
   </body>
 </html>

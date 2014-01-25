@@ -1,3 +1,25 @@
 body {
 	font: 14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	padding-top: 50px;
+}
+#heading-nav ul {
+	@media (min-width: 1200px) {
+		width: 165px;
+	}
+	@media (min-width: 992px) {
+		width: 130px;
+		&.affix-top {
+			padding-top: 200px;
+		}
+	}
+	@media (max-width: 991px) {
+		padding-top: 20px;
+		&.affix {
+			position: static;
+		}
+	}
+}
+h2[id] {
+	padding-top: 50px;
+	margin-top: -50px;
 }
