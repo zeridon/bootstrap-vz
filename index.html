@@ -4,6 +4,18 @@ id: home
 title: bootstrap-vz by andsens
 heading: bootstrap-vz
 ---
+bootstrap-vz is a fully automated bootstrapping tool for Debian.
+It creates images for various virtualized platforms (at the moment: kvm, virtualbox, ec2).
+The plugin architecture allows for heavy modification of standard behavior
+(e.g. create a vagrant box, apply puppet manifests, run custom shell commands).
+
+At no time is the resulting image booted, meaning there are no latent logfiles
+or bash_history files.
+
+The bootstrapper runs on a single json manifest file which contains all configurable
+parameters. This allows you to recreate the image whenever you like so you can create
+an updated version of an existing image or create the same image in multiple EC2 regions.
+
 <h2 id="dependencies">Dependencies</h2>
 
 <p>You will need to run debian wheezy with <strong>python 2.7</strong> and <strong>debootstrap</strong> installed.
@@ -24,28 +36,3 @@ Other depencies include:</p>
 </ul>
 
 <p>Bootstrapping instance store AMIs requires <strong>euca2ools</strong> to be installed.</p>
-
-<h2 id="highlights">Highlights</h2>
-
-<ul>
-	<li>The desired image is configured entirely via a JSON manifest file
-		<ul>
-			<li>Manifests are validated by a json schemas</li>
-			<li>Support comments</li>
-		</ul>
-	</li>
-	<li>Proper support for different providers</li>
-	<li>The task based system has been completely revamped
-		<ul>
-			<li>Higher granularity increases reusability of tasks across providers</li>
-			<li>Tasks are neatly organized into modules</li>
-			<li>A task dependency graph is built to determine the execution order</li>
-		</ul>
-	</li>
-	<li>Support for rollback actions if something fails</li>
-	<li>Logfiles
-		<ul>
-			<li>All output from invoked subprocesses is logged</li>
-		</ul>
-	</li>
-</ul>
