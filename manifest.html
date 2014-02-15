@@ -9,12 +9,20 @@ heading: The manifest file
 	Every configuration and customization of a Debian installation is specified in this file.
 </p>
 <p>
-	Variables...
-</p>
-<p>
 	The manifest format is JSON. It is near impossible to run the bootstrapper with an invalid configuration,
 	since every part of the framework supplies a <a href="http://json-schema.org/">json-schema</a> that
-	specifies exactly what configuration settings are valid in different situations.<br/>
+	specifies exactly which configuration settings are valid in different situations.<br/>
+</p>
+<p>
+	Many of the settings in the example manifests use strings like
+	<tt>debian-{system.release}-{system.architecture}-{{"{%y"}}}{{"{%m"}}}{{"{%d"}}}</tt>.
+	These strings make use of manifest variables, which can cross reference other settings in the manifest
+	or specific values supplied by the bootstrapper (e.g. all python date formatting variables are available).<br/>
+	Any reference uses dots to specify a path to the desired manifest setting.
+	Not all settings support this though, to see whether embedding a manifest variable in a setting is possible,
+	look for the <span class="manifest_vars label label-info"></span> label.
+</p>
+<p>
 	The manifest is split into 7 sections.
 </p>
 
@@ -70,11 +78,13 @@ heading: The manifest file
 			this would be the name visible in the interface when booting up new instances.
 			When bootstrapping for VirtualBox or kvm, it's the filename of the image.
 			<span class="required label label-danger"></span>
+			<span class="manifest_vars label label-info"></span>
 		</li>
 		<li>
 			<tt>description</tt>: Description of the image. Where this setting is used depends highly on which
 			provider is set. At the moment it is only used for AWS images.
 			<span class="required label label-danger">for ec2 provider</span>
+			<span class="manifest_vars label label-info"></span>
 		</li>
 		<li>
 			<tt>bucket</tt>: When bootstrapping an S3 backed image for AWS, this will be the bucket where the
@@ -206,3 +216,8 @@ heading: The manifest file
 
 
 <h2 id="plugins">Plugins</h2>
+<p>
+	The plugins section is a map of plugin names to whatever configuration a plugin requires.
+	Go to the <a href="plugins.html">plugin section</a> of the documentation, to see the configuration
+	for a specific plugin.
+</p>
