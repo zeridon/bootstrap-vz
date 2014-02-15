@@ -1,0 +1,23 @@
+.manifest {
+	span.label:empty {
+		display: inline;
+	}
+	span.required:before {
+		content: "Required: ";
+	}
+	span.required:empty:before {
+		content: "Required";
+	}
+	span.optional:before {
+		content: "Optional";
+	}
+	span.valid-enum:before {
+		content: "Valid values: ";
+	}
+	span.valid:before {
+		content: "Valid values:";
+	}
+	span.default:before {
+		content: "Default value: ";
+	}
+}

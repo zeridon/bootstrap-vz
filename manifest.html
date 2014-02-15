@@ -4,24 +4,205 @@ id: manifest
 title: The manifest file
 heading: The manifest file
 ---
-Explain basics
+<p>
+	The manifest file is the primary way to interact with bootstrap-vz.
+	Every configuration and customization of a Debian installation is specified in this file.
+</p>
+<p>
+	Variables...
+</p>
+<p>
+	The manifest format is JSON. It is near impossible to run the bootstrapper with an invalid configuration,
+	since every part of the framework supplies a <a href="http://json-schema.org/">json-schema</a> that
+	specifies exactly what configuration settings are valid in different situations.<br/>
+	The manifest is split into 7 sections.
+</p>
 
 <h2 id="provider">Provider</h2>
-
+<p>
+	The provider setting consist of a single string, which specifies the target virtualization platform
+	of the installation.
+	Consult the <a href="providers.html">providers</a> section of the documentation for a list of valid values.
+</p>
 
 <h2 id="bootstrapper">Bootstrapper</h2>
+<p>
+	This section concerns the bootstrapper itself and its behavior. There are 4 possible settings:
+	<ul>
+		<li>
+			<tt>workspace</tt>: Path to where the bootstrapper should place images and intermediate files.
+			Any volumes will be mounted under that path.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>tarball</tt>: debootstrap has the option to download all the software and pack it up in a tarball.
+			When starting the actual bootstrapping process debootstrap can then be pointed at that tarball and use it
+			instead of downloading anything from the internet. If you plan on running the bootstrapper multiple times,
+			this option can save you a lot of bandwidth and time.
+			<span class="optional label label-success"></span>
+			<span class="valid-enum label label-primary">true, false</span>
+			<span class="default label label-default">false</span>
+		</li>
+		<li>
+			<tt>mirror</tt>: The mirror debootstrap should download software from.
+			It is advisable to specify a mirror close to your location (or the location of the host you are bootstrapping on),
+			to decrease latency and improve bandwidth.<br/>
+			If not specified, <a href="#packages">the configured aptitude mirror URL</a> is used.
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>guest_additions</tt>: This setting is only relevant for the
+			<a href="providers.html#vbox">virtualbox provider</a>.
+			It specifies the path to the VirtualBox Guest Additions ISO, which, when specified, will be mounted and used
+			to install the VirtualBox Guest Additions.
+			<span class="optional label label-success"></span>
+		</li>
+	</ul>
+</p>
 
 
 <h2 id="image">Image</h2>
-
+<p>
+	The image section configures anything pertaining directly to the image that will be created.
+	<ul>
+		<li>
+			<tt>name</tt>: The name of the resulting image. When bootstrapping cloud images,
+			this would be the name visible in the interface when booting up new instances.
+			When bootstrapping for VirtualBox or kvm, it's the filename of the image.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>description</tt>: Description of the image. Where this setting is used depends highly on which
+			provider is set. At the moment it is only used for AWS images.
+			<span class="required label label-danger">for ec2 provider</span>
+		</li>
+		<li>
+			<tt>bucket</tt>: When bootstrapping an S3 backed image for AWS, this will be the bucket where the
+			image is uploaded to. 
+			<span class="required label label-danger">for S3 backing</span>
+		</li>
+	</ul>
+</p>
 
 <h2 id="system">System</h2>
+<p>
+	This section defines anything that pertains directly to the bootstrapped system and
+	does not fit under any other section.
+	<ul>
+		<li>
+			<tt>release</tt>: Defines which debian release should be bootstrapped.
+			<span class="valid-enum label label-primary">squeeze, wheezy, jessie, sid, oldstable, stable, testing, unstable</span>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>architecture</tt>: The architecture of the system.
+			<span class="valid-enum label label-primary">i386, amd64</span>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>timezone</tt>: Timezone of the system.
+			<span class="valid label label-primary"></span> Any filename from <tt>/usr/share/zoneinfo</tt>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>locale</tt>: The default locale of the system.
+			<span class="valid label label-primary"></span> Any locale mentioned in <tt>/etc/locale.gen</tt>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>charmap</tt>: The default charmap of the system.
+			<span class="valid label label-primary"></span> Any valid charmap like UTF-8, ISO-8859-* or GBK.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>bootloader</tt>: The bootloader for the system. Depending on the bootmethod of the virtualization
+			platform, the options may be restricted.
+			<span class="valid-enum label label-primary">grub, extlinux, pv-grub</span>
+			<span class="required label label-danger"></span>
+		</li>
+	</ul>
+</p>
 
 
 <h2 id="packages">Packages</h2>
-
+<p>
+	The packages section allows you to install custom packages from a variety of sources.
+	<ul>
+		<li>
+			<tt>install</tt>: A list of strings that specify which packages should be installed.
+			<span class="valid label label-primary"></span> package names optionally followed by a <tt>/target</tt>
+			or paths to local <tt>.deb</tt> files.
+		</li>
+		<li>
+			<tt>mirror</tt>: The default aptitude mirror.
+			<span class="optional label label-success"></span>
+			<span class="default label label-default">http://http.debian.net/debian</span>
+		</li>
+		<li>
+			<tt>sources</tt>: A map of additional sources that should be added to the aptitude sources list.
+			The key becomes the filename in <tt>/etc/apt/sources.list.d/</tt>,
+			while the value is an array with each entry being a line.
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>trusted-keys</tt>: List of paths to <tt>.gpg</tt> keyrings that should be added to the
+			aptitude keyring of trusted signatures for repositories.
+			<span class="optional label label-success"></span>
+		</li>
+	</ul>
+</p>
 
 <h2 id="volume">Volume</h2>
+<p>
+	bootstrap-vz allows a wide range of options for configuring the disk layout of the system.
+	It can create unpartitioned as well as partitioned volumes using either the gpt or msdos scheme.
+	At most, there are only three partitions with predefined roles configurable though.
+	They are boot, root and swap.
+	<ul>
+		<li>
+			<tt>backing</tt>: Specifies the volume backing. This setting is very provider specific.
+			<span class="valid-enum label label-primary">ebs,s3,vmdk,vdi,raw</span>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>partitions</tt>: A map of the partitions that should be created on the volume.
+			<ul>
+				<li>
+					<tt>type</tt>: The partitioning scheme to use.
+					When using <tt>none</tt>, only root can be specified as a partition.
+					<span class="valid-enum label label-primary">none,gpt,msdos</span>
+					<span class="required label label-danger"></span>
+				</li>
+				<li>
+					<tt>root</tt>: Configuration of the root partition. <span class="required label label-danger"></span>
+					<ul>
+						<li>
+							<tt>size</tt>: The size of the partition.
+							<span class="valid label label-primary"></span> Any datasize specification up to TB (e.g. 5KiB, 1MB, 6TB).
+							<span class="required label label-danger"></span>
+						</li>
+						<li>
+							<tt>filesystem</tt>: The filesystem of the partition.
+							When choosing <tt>xfs</tt>, the <tt>xfsprogs</tt> package will need to be installed.
+							<span class="valid-enum label label-primary">ext2, ext3, ext4, xfs</span>
+							<span class="required label label-danger"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<tt>boot</tt>: Configuration of the boot partition.
+					The two settings equal those of the root partition.
+					<span class="optional label label-success"></span>
+				</li>
+				<li>
+					<tt>swap</tt>: Configuration of the swap partition.
+					Since the swap partition has its own filesystem you can only specify the size for this partition.
+					<span class="optional label label-success"></span>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</p>
 
 
 <h2 id="plugins">Plugins</h2>

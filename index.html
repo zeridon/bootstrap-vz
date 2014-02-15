@@ -4,35 +4,27 @@ id: home
 title: bootstrap-vz by andsens
 heading: bootstrap-vz
 ---
-bootstrap-vz is a fully automated bootstrapping tool for Debian.
-It creates images for various virtualized platforms (at the moment: kvm, virtualbox, ec2).
-The plugin architecture allows for heavy modification of standard behavior
-(e.g. create a vagrant box, apply puppet manifests, run custom shell commands).
-
-At no time is the resulting image booted, meaning there are no latent logfiles
-or bash_history files.
-
-The bootstrapper runs on a single json manifest file which contains all configurable
-parameters. This allows you to recreate the image whenever you like so you can create
-an updated version of an existing image or create the same image in multiple EC2 regions.
+<p>
+	bootstrap-vz is a bootstrapping framework for Debian specifically targeted at virtualized environments.
+	It runs without any user intervention and generates a ready-to-boot image for
+	<a href="providers.html">a number of virtualization platforms</a>.
+	Its aim is to provide a reproducable bootstrapping process using <a href="manifest.html">manifests</a>
+	as well as supporting a high degree of customizability through plugins.
+</p>
 
 <h2 id="dependencies">Dependencies</h2>
-
-<p>You will need to run debian wheezy with <strong>python 2.7</strong> and <strong>debootstrap</strong> installed.
-Other depencies include:</p>
-
-<ul>
-	<li>qemu-utils</li>
-	<li>parted</li>
-	<li>grub2</li>
-	<li>euca2ools</li>
-	<li>xfsprogs (If you want to use XFS as a filesystem)
-	Also the following python libraries are required:</li>
-	<li><strong>boto</strong></li>
-	<li>
-	<strong>jsonschema</strong> (<a href="https://pypi.python.org/pypi/jsonschema">version 2.0.0</a>, only available through pip)</li>
-	<li><strong>termcolor</strong></li>
-	<li><strong>fysom</strong></li>
-</ul>
-
-<p>Bootstrapping instance store AMIs requires <strong>euca2ools</strong> to be installed.</p>
+<p>
+	bootstrap-vz has a number of dependencies depending on the target platform and
+	<a href="plugins.html">the selected plugins</a>.
+	At a bare minimum the following python libraries are needed:
+	<ul>
+		<li><a href="https://pypi.python.org/pypi/termcolor">termcolor</a></li>
+		<li><a href="https://pypi.python.org/pypi/fysom">fysom</a></li>
+		<li><a href="https://pypi.python.org/pypi/jsonschema">jsonschema</a></li>
+	</ul>
+	To bootstrap Debian itself <a href="https://packages.debian.org/wheezy/debootstrap">debootstrap</a>
+	is needed as well.<br/>
+	Any other requirements are dependent upon the manifest configuration and are detailed in the corresponding
+	sections of the documentation.
+	bootstrap-vz will however warn you if a requirement has not been met, before the bootstrapping process begins.
+</p>
