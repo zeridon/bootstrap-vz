@@ -1,22 +1,81 @@
 ---
 layout: default
 id: manifest
-title: Development guidelines
-heading: The manifest file
+title: Development
+heading: Developing for bootstrap-vz
 ---
 
-They should only be deviated from when it is impossible to achieve the desired functionality
 
-The manifest should always fully describe the resulting image, the outcome should never depend on settings specified elsewhere
-The bootstrapper should always be able to run fully unattended
-The bootstrapper should only need as much setup as the manifest requires such as credentials or the path to VirtualBox guest additions (host package dependencies are an exception)
-
-Roll complexity into which tasks are added to the tasklist
-Control flow should be directed from the task graph, avoid creating complicated run() functions (if necessary, split up a function into two tasks)
-Task classes should be treated as decorated run() functions, they should not have any state
-Only add stuff to the BootstrapInformation object when really necessary (avoid clutter)
-If a run() function checks whether it should do any work or simply be skipped, consider doing that check in resolve_tasks() instead and remove the task alltogether
-
-Use the manifest-schema to check for allowed settings as long as the checks are simple (fall back to doing the check in python when that solution is considerably less complex)
+<p>
+	<h2 id="development_guidelines">Development guidelines</h2>
+	The following guidelines should serve as general advice when developing providers or plugins for bootstrap-vz.
+	Keep in mind that these guidelines are not <i>rules</i>, they are <i>advice</i> on how to better add value
+	to the bootstrap-vz codebase.
+</p>
+<p>
+	<ul>
+		<li>
+			<b>The manifest should always fully describe the resulting image.
+			The outcome of a bootstrapping process should never depend on settings specified elsewhere.</b>
+			<br/>
+			This allows others to easily reproduce any setup other people are running and makes it possible
+			to share manifests.
+			<a href="https://aws.amazon.com/marketplace/seller-profile?id=890be55d-32d8-4bc8-9042-2b4fd83064d5">The
+			official debian EC2 images</a> for example can be reproduced using the manifests available in the
+			manifest directory of bootstrap-vz.
+		</li>
+		<li>
+			<b>The bootstrapper should always be able to run fully unattended.</b><br/>
+			For end users, this guideline minimizes the risk of errors.
+			Any required input would also be in direct conflict with the previous guideline that the manifest
+			should always fully describe the resulting image.<br/>
+			Additionally developers may have to run the bootstrap process multiple times though, any prompts
+			in the middle of that process may significantly slow down the development speed.
+		</li>
+		<li>
+			<b>The bootstrapper should only need as much setup as the manifest requires.</b><br/>
+			Having to shuffle specific paths on the host into place (e.g. <tt>/target</tt> has to be created manually)
+			to get the bootstrapper running is going to increase the rate of errors made by users.
+			Aim for minimal setup.<br/>
+			Exceptions are of course things such as the path to the VirtualBox Guest Additions ISO or
+			tools like <tt>parted</tt> that need to be installed on the host.
+		</li>
+		<li>
+			<b>Roll complexity into which tasks are added to the tasklist.</b><br/>
+			If a run() function checks whether it should do any work or simply be skipped,
+			consider doing that check in resolve_tasks() instead and avoid adding that task alltogether.
+			This allows people looking at the tasklist in the logfile to determine what work has been performed.
+			If a task says it will modify a file but then bails , a developer may get confused
+			when looking at that file after bootstrapping. He could conclude that the file has either been overwritten
+			or that the search &amp; replace does not work correctly.
+		</li>
+		<li>
+			<b>Control flow should be directed from the task graph.</b><br/>
+			Avoid creating complicated <tt>run()</tt> functions.
+			If necessary, split up a function into two semantically separate tasks.<br/>
+			This allows other tasks to interleave with the control-flow and add extended functionality
+			(e.g. because volume creation and mounting are two separate tasks,
+			<a href="plugins.html#prebootstrapped">the prebootstrapped plugin</a> can replace the volume
+			creation task with a task of its own that creates a volume from a snapshot instead, but still
+			reuse the mount task).
+		</li>
+		<li>
+			<b>Task classes should be treated as decorated run() functions, they should not have any state</b><br/>
+			Thats what the BootstrapInformation object is for.
+		</li>
+		<li>
+			<b>Only add stuff to the BootstrapInformation object when really necessary.</b><br/>
+			This is mainly to avoid clutter.
+		</li>
+		<li>
+			<b>Use a json-schema to check for allowed settings</b><br/>
+			The json-schema may be verbose but it keeps the bulk of check work outside the python code,
+			which is a big plus when it comes to readability.
+			This of course only applies bas long as the checks are simple.
+			You can of course fall back to doing the check in python when that solution is considerably less complex.
+		</li>
+	</ul>
+</p>
 
 <h2 id="switches">Commandline switches</h2>
+<h2 id="logfile">Logfile</h2>
