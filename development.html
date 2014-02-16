@@ -77,5 +77,29 @@ heading: Developing for bootstrap-vz
 	</ul>
 </p>
 
-<h2 id="switches">Commandline switches</h2>
-<h2 id="logfile">Logfile</h2>
+<p>
+	<h2 id="switches">Commandline switches</h2>
+	As a developer, there are commandline switches available which can make your life a lot easier.
+	<ul>
+		<li>
+			<tt>--debug</tt>: Enables debug output in the console.
+			This includes output from all commands that are invoked during bootstrapping.
+		</li>
+		<li>
+			<tt>--pause-on-error</tt>: Pauses the execution when an exception occurs before rolling back.
+			This allows you to debug by inspecting the volume at the time the error occured.
+		</li>
+		<li>
+			<tt>--dry-run</tt>: Prevents the run() function from being called on all tasks.
+			This is useful if you want to see whether the task order is correct.
+		</li>
+	</ul>
+</p>
+
+<p>
+	<h2 id="logfile">Logfile</h2>
+	Every run creates a new logfile in the <tt>logs/</tt> directory.
+	The filename for each run consists of a timestamp (<tt>%Y%m%d%H%M%S</tt>)
+	and the basename of the manifest used.
+	The log also contains debugging statements regardless of whether the <tt>--debug</tt> switch was used.
+</p>

@@ -16,6 +16,27 @@ heading: bootstrap-vz
 </p>
 
 <p>
+	<h2 id="invocation">Invocation</h2>
+	To run bootstrap-vz, simply call it with a manifest as an argument.
+<pre>
+root@host:~/bootstrap-vz$ ./bootstrap-vz manifests/ec2-ebs-debian-official-amd64-hvm.manifest.json
+</pre>
+	bootstrap-vz can only be run as root, since volumes need to be attached, formatted etc.
+</p>
+
+<p>
+	<h2 id="cleanup">Cleanup</h2>
+	bootstrap-vz tries very hard to clean up after itself both if a run was successful but also if it failed.
+	This ensures that you are not left with volumes still attached to the host which are useless.
+	If an error occurred you can simply correct the problem that caused it and rerun everything,
+	there will be no leftovers from the previous run
+	(as always there are of course rare/unlikely exceptions to that rule).
+	The error messages should always give you a strong hint at what is wrong, if that is not the case
+	please consider <a href="https://github.com/andsens/bootstrap-vz/issues">opening an issue</a>
+	and attach both the error message and your manifest (preferably as a gist or similar).
+</p>
+
+<p>
 	<h2 id="dependencies">Dependencies</h2>
 	bootstrap-vz has a number of dependencies depending on the target platform and
 	<a href="plugins.html">the selected plugins</a>.
