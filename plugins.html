@@ -4,7 +4,14 @@ id: manifest
 title: Plugins
 heading: Plugins
 ---
-Explain basics
+
+Plugins are a key feature of bootstrap-vz.
+Despite their small size (most plugins do not exceed 100 source lines of code)
+they can modify the behavior of bootstrapped systems to a great extent.<br/>
+Below you will find documentation for all plugins available for bootstrap-vz.
+If you cannot find what you are looking for, consider <a href="development.html">developing it yourself</a>
+and contribute to this list!
+
 
 <p>
 	<h2 id="admin_user">Admin user</h2>
@@ -52,7 +59,7 @@ Explain basics
 </p>
 
 <p>
-	<h2 id="image_commands">image commands</h2>
+	<h2 id="image_commands">Image commands</h2>
 	The image commands plugin allows you to run arbitrary commands during the bootstrap process.
 	The commands are run at an indeterminate point <i>after</i> packages have been installed, but
 	<i>before</i> the volume has been unmounted.
@@ -135,72 +142,109 @@ Explain basics
 
 <p>
 	<h2 id="prebootstrapped">prebootstrapped</h2>
+	When developing for bootstrap-vz, testing can be quite tedious since the bootstrapping process can take while.
+	The prebootstrapped plugin solves that problem by creating a snapshot of your volume right after all the
+	software has been installed. The next time bootstrap-vz is run, the plugin replaces
+	all volume preparation and bootstrapping tasks and recreates the volume from the snapshot instead.<br/>
+	The plugin assumes that the users knows what he is doing and e.g. doesn't check whether bootstrap-vz is
+	being run with a partitioned volume configuration, while the snapshot is unpartitioned.<br/>
+	When no snapshot or image is specified the plugin creates on and outputs its ID/path.
+	Specifying an ID/path automatically enables the second mode of operation which recreates the volume from
+	the specified snapshot instead of creating it from scratch.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>snapshot</tt>: ID of the EBS snapshot to use.
+			This setting only works with EBS backed EC2 configurations.
+		</li>
+		<li>
+			<tt>image</tt>: Path to the loopbackvolume snapshot.
+			This setting works with all configurable volume backings except EBS.
 		</li>
 	</ul>
 </p>
 
 <p>
-	<h2 id="publish_image">publish image</h2>
+	<h2 id="puppet">Puppet</h2>
+	Installs <a href="http://puppetlabs.com/">puppet</a> and optionally applies a manifest inside the chroot.
+	You can also have it copy your puppet configuration into the image so it is readily available
+	once the image is booted.<br/>
+	Keep in mind that when applying a manifest, the system is in a chrooted environment.
+	This can prevent daemons from running properly (e.g. listening to ports), they will also
+	need to be shut down gracefully (which bootstrap-vz cannot do) before unmounting the volume.
+	It is advisable to avoid starting any daemons inside the chroot at all.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>manifest</tt>: Path to the puppet manifest that should be applied.
+			<span class="optional label label-success"></span>
 		</li>
-	</ul>
-</p>
-
-<p>
-	<h2 id="puppet">puppet</h2>
-</p>
-<p>
-	<h3>Settings</h3>
-	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>assets</tt>: Path to puppet assets. The contents will be copied into <tt>/etc/puppet</tt>
+			on the image. Any existing files will be overwritten.
+			<span class="optional label label-success"></span>
 		</li>
 	</ul>
 </p>
 
 <p>
 	<h2 id="root_password">root password</h2>
+	Sets the root password. This plugin removes the task that disables the SSH password authentication.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>password</tt>: The password for the root user.
+			<span class="required label label-danger"></span>
 		</li>
 	</ul>
 </p>
 
 <p>
-	<h2 id="unattended_upgrades">unattended upgrades</h2>
+	<h2 id="unattended_upgrades">Unattended upgrades</h2>
+	Enables the <a href="https://packages.debian.org/wheezy/unattended-upgrades">unattended update/upgrade feature</a>
+	in aptitude. Enable it to have your system automatically download and install security updates automatically
+	with a set interval.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>update_interval</tt>: Days between running <tt>apt-get update</tt>.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>download_interval</tt>: Days between running <tt>apt-get upgrade --download-only</tt>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>upgrade_interval</tt>: Days between installing any security upgrades.
+			<span class="required label label-danger"></span>
 		</li>
 	</ul>
 </p>
 
 <p>
-	<h2 id="vagrant">vagrant</h2>
+	<h2 id="vagrant">Vagrant</h2>
+	Vagrant is a tool to quickly create virtualized environments.
+	It uses "boxes" to make downloading and sharing those environments easier.
+	A box is a tarball containing a virtual volumes accompanied by an
+	<a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format">OVF specification</a>
+	of the virtual machine.<br/>
+	This plugin creates a vagrant box that is ready to be shared or deployed.
+	At the moment it is only compatible with the VirtualBoox provider.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>setting</tt>:
+			<tt>hostname</tt>: hostname to preconfigure the system with.
+			<span class="required label label-danger"></span>
 		</li>
 	</ul>
 </p>
