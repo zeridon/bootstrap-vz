@@ -121,16 +121,15 @@ and contribute to this list!
 <p>
 	<h2 id="opennebula">Open Nebula</h2>
 	This plugin adds <a href="http://opennebula.org/documentation:rel4.2:cong">OpenNebula contextualization</a>
-	to the image.<br/>
-	It set up the network and ssh keys.
-	To do so you should configure your virtual machine context with something like:
-	<pre>
-		ETH0_DNS      $NETWORK[DNS, NETWORK_ID=2]
-		ETH0_GATEWAY  $NETWORK[GATEWAY, NETWORK_ID=2]
-		ETH0_IP       $NIC[IP, NETWORK_ID=2]
-		ETH0_MASK 	  $NETWORK[MASK, NETWORK_ID=2]
-		ETH0_NETWORK  $NETWORK[NETWORK, NETWORK_ID=2]
-		FILES         path_to_my_ssh_public_key.pub
+	to the image, which sets up the network configuration and SSH keys.<br/>
+	The virtual machine context should be configured as follows:
+<pre>
+ETH0_DNS      $NETWORK[DNS, NETWORK_ID=2]
+ETH0_GATEWAY  $NETWORK[GATEWAY, NETWORK_ID=2]
+ETH0_IP       $NIC[IP, NETWORK_ID=2]
+ETH0_MASK     $NETWORK[MASK, NETWORK_ID=2]
+ETH0_NETWORK  $NETWORK[NETWORK, NETWORK_ID=2]
+FILES         path_to_my_ssh_public_key.pub
 </pre>
 	The plugin will install all *.pub* files in the root authorized_keys file.
 	When using the ec2 provider, the USER_EC2_DATA will be executed if present.

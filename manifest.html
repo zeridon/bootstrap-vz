@@ -34,6 +34,39 @@ heading: The manifest file
 </p>
 
 <p>
+	<h2 id="credentials">Credentials</h2>
+	Any credentials needed by the bootstrapper are added to this section.
+	Currently this section is only applicable when using the <a href="providers.html">EC2</a> provider.
+	<ul>
+		<li>
+			<tt>access-key</tt>: AWS access-key.
+			May also be supplied via the environment variable <tt>$AWS_ACCESS_KEY</tt>
+			<span class="required label label-danger">for EBS &amp; S3 backing</span>
+		</li>
+		<li>
+			<tt>secret-key</tt>: AWS secret-key.
+			May also be supplied via the environment variable <tt>$AWS_SECRET_KEY</tt>
+			<span class="required label label-danger">for EBS &amp; S3 backing</span>
+		</li>
+		<li>
+			<tt>certificate</tt>: Path to the AWS user certificate. Used for uploading the image to an S3 bucket.
+			May also be supplied via the environment variable <tt>$AWS_CERTIFICATE</tt>
+			<span class="required label label-danger">for S3 backing</span>
+		</li>
+		<li>
+			<tt>private-key</tt>: Path to the AWS private key. Used for uploading the image to an S3 bucket.
+			May also be supplied via the environment variable <tt>$AWS_PRIVATE_KEY</tt>
+			<span class="required label label-danger">for S3 backing</span>
+		</li>
+		<li>
+			<tt>user-id</tt>: AWS user ID. Used for uploading the image to an S3 bucket.
+			May also be supplied via the environment variable <tt>$AWS_USER_ID</tt>
+			<span class="required label label-danger">for S3 backing</span>
+		</li>
+	</ul>
+</p>
+
+<p>
 	<h2 id="bootstrapper">Bootstrapper</h2>
 	This section concerns the bootstrapper itself and its behavior. There are 4 possible settings:
 	<ul>

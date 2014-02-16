@@ -5,8 +5,49 @@ title: Providers
 heading: Providers
 ---
 
+<p>
+	<h2 id="ec2">EC2</h2>
+	The <a href="http://aws.amazon.com/ec2/">EC2</a> provider automatically creates a volume for bootstrapping
+	(be it EBS or S3), makes a snapshot of it once it is done and registers it as an AMI.
+	EBS volume backing only works on an EC2 host while S3 backed volumes <i>should</i> work locally
+	(at this time however they do not, a fix is in the works).<br/>
+	Unless <a href="plugins.html#cloud_init">the cloud-init plugin</a> is used, special startup scripts
+	will be installed that automatically fetch the configured authorized_key from the instance metadata
+	and save or run any userdata supplied (if the userdata begins with <tt>#!</tt> it will be run).
+</p>
+<p>
+	<h3>Credentials</h3>
+	The AWS credentials can be configured in two ways: Via the manifest or through environment variables.
+	To bootstrap S3 backed instances you will need a user certificate and a private key in addition to the
+	access key and secret key, which are needed for bootstraping EBS backed instances.
+	The <a href="manifest.html#credentials">manifest documentation</a> goes in to detail on how
+	you can configure this.
+</p>
 
-<h2 id="ec2">EC2</h2>
-<h2 id="gce">Google Compute Engine</h2>
-<h2 id="vbox">VirtualBox</h2>
-<h2 id="kvm">KVM</h2>
+<p>
+	<h2 id="gce">Google Compute Engine</h2>
+	The <a href="https://cloud.google.com/products/compute-engine/">GCE</a> provider is in development but
+	not fully finished.
+	To bootstrap a Google Compute Engine image, you will have to resort to the
+	<a href="https://github.com/andsens/build-debian-cloud">build-debian-cloud</a> bash script.
+	The predecessor of bootstrap-vz.
+</p>
+
+<p>
+	<h2 id="vbox">VirtualBox</h2>
+	The <a href="https://www.virtualbox.org/">VirtualBox</a> provider can bootstrap to both .vdi and .vmdk images
+	(raw images are also supported but do not run in VirtualBox).
+	It's advisable to always use vmdk images for interoperability
+	(e.g. <a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format">OVF</a> files <i>should</i>
+	support vdi files, but since they have no identifier URL not even VirtualBox itself can import them).
+	VirtualBox Guest Additions can be installed automatically if the ISO is
+	<a href="manifest.html#bootstrapper">provided in the manifest</a>.
+</p>
+
+<p>
+	<h2 id="kvm">KVM</h2>
+	The <a href="http://www.linux-kvm.org/page/Main_Page">KVM</a> provider creates virtual images for
+	Linux Kernel-based Virtual Machines.
+	It supports the installation of <a href="http://www.linux-kvm.org/page/Virtio">virtio kernel modules</a>
+	(paravirtualized drivers for IO operations).
+</p>
