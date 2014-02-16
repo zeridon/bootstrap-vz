@@ -6,37 +6,201 @@ heading: Plugins
 ---
 Explain basics
 
-<h2 id="admin_user">Admin user</h2>
+<p>
+	<h2 id="admin_user">Admin user</h2>
+	This plugin creates a user with passwordless sudo privileges.
+	It also disables the SSH root login.
+	If the EC2 init scripts are installed, the script for fetching the
+	SSH authorized keys will be adjust to match the username specified.
+</p>
+<h3>Settings</h3>
+<p>
+	<ul>
+		<li>
+			<tt>username</tt>: The username of the account to create.
+			<span class="required label label-danger"></span>
+		</li>
+	</ul>
+</p>
 
 
-<h2 id="build_metadata">Build metadata</h2>
+<p>
+	<h2 id="cloud_init">cloud-init</h2>
+	This plugin installs and configures <a href="https://packages.debian.org/wheezy-backports/cloud-init">cloud-init</a>
+	on the system. Depending on the release it installs it from either backports or the main repository.<br/>
+	cloud-init is only compatible with Debian wheezy and upwards.
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>username</tt>: The username of the account to create.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>disable_modules</tt>: A list of strings specifying which cloud-init modules should be disabled.
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>metadata_sources</tt>: A string that sets the
+			<a href="http://cloudinit.readthedocs.org/en/latest/topics/datasources.html">datasources</a> that cloud-init
+			should try fetching metadata from.
+			The source is automatically set when using the ec2 provider.
+			<span class="optional label label-success"></span>
+		</li>
+	</ul>
+</p>
 
+<p>
+	<h2 id="image_commands">image commands</h2>
+	The image commands plugin allows you to run arbitrary commands during the bootstrap process.
+	The commands are run at an indeterminate point <i>after</i> packages have been installed, but
+	<i>before</i> the volume has been unmounted.
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>commands</tt>: A list of lists containing strings. Each top-level item is a single command,
+			while the strings inside each list comprise parts of a command. This allows for proper shell argument
+			escaping (to circumvent this, simply put the entire command in a single string).
+			In addition to the manifest variables <tt>{root}</tt> is also available.
+			It points at the root of the image volume.
+			<span class="required label label-danger"></span>
+			<span class="manifest_vars label label-info"></span>
+		</li>
+	</ul>
+</p>
 
-<h2 id="cloud_init">cloud-init</h2>
+<p>
+	<h2 id="minimize_size">minimize size</h2>
+	This plugin can be used to reduce the size of the resulting image.
+	Often virtual volumes are much smaller than their reported size until any data is written to them.
+	During the bootstrapping process temporary data like the aptitude cache is written to the volume
+	only to be removed again.<br/>
+	The minimize size plugin employs three different strategies to keep a low volume footprint:
+	<ul>
+		<li>
+			Mount folders from the host into key locations of the image volume to avoid any unneccesary disk writes.
+		</li>
+		<li>
+			Use <a href="http://intgat.tigress.co.uk/rmy/uml/index.html">zerofree</a> to deallocate sectors on the
+			volume, that are not used. This only works with unpartitioned volumes.
+		</li>
+		<li>
+			Use <a href="https://www.vmware.com/support/ws45/doc/disks_vdiskmanager_eg_ws.html">vmware-vdiskmanager</a>
+			to shrink the real volume size (only applicable when using vmdk backing).
+			The tool is part of the <a href="https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0">VMWare Workstation</a> package.
+		</li>
+	</ul>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>zerofree</tt>: Path to the zerofree executable. If specified, the tool will be run.
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>shrink</tt>: Whether the volume should be shrunk. This setting works best in conjunction with the
+			zerofree tool.
+			<span class="valid-enum label label-primary">true, false</span>
+			<span class="default label label-default">false</span>
+			<span class="optional label label-success"></span>
+		</li>
+	</ul>
+</p>
 
+<p>
+	<h2 id="opennebula">Open Nebula</h2>
+	This plugin adds <a href="http://opennebula.org/documentation:rel4.2:cong">OpenNebula contextualization</a>
+	to the image.<br/>
+	It set up the network and ssh keys.
+	To do so you should configure your virtual machine context with something like:
+	<pre>
+		ETH0_DNS      $NETWORK[DNS, NETWORK_ID=2]
+		ETH0_GATEWAY  $NETWORK[GATEWAY, NETWORK_ID=2]
+		ETH0_IP       $NIC[IP, NETWORK_ID=2]
+		ETH0_MASK 	  $NETWORK[MASK, NETWORK_ID=2]
+		ETH0_NETWORK  $NETWORK[NETWORK, NETWORK_ID=2]
+		FILES         path_to_my_ssh_public_key.pub
+</pre>
+	The plugin will install all *.pub* files in the root authorized_keys file.
+	When using the ec2 provider, the USER_EC2_DATA will be executed if present.
+</p>
+<p>
+	<h3>Settings</h3>
+	This plugin has no settings. To enable it add <tt>"opennebula":{}</tt> to the plugin section of the manifest.
+</p>
 
-<h2 id="image_commands">image commands</h2>
+<p>
+	<h2 id="prebootstrapped">prebootstrapped</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
 
+<p>
+	<h2 id="publish_image">publish image</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
 
-<h2 id="minimize_size">minimize size</h2>
+<p>
+	<h2 id="puppet">puppet</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
 
+<p>
+	<h2 id="root_password">root password</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
 
-<h2 id="opennebula">Open Nebula</h2>
+<p>
+	<h2 id="unattended_upgrades">unattended upgrades</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
 
-
-<h2 id="prebootstrapped">prebootstrapped</h2>
-
-
-<h2 id="publish_image">publish image</h2>
-
-
-<h2 id="puppet">puppet</h2>
-
-
-<h2 id="root_password">root password</h2>
-
-
-<h2 id="unattended_upgrades">unattended upgrades</h2>
-
-
-<h2 id="vagrant">vagrant</h2>
+<p>
+	<h2 id="vagrant">vagrant</h2>
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>setting</tt>:
+		</li>
+	</ul>
+</p>
