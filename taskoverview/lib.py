@@ -68,12 +68,12 @@ def write_data(data, output_path=None):
 
 def walk_classes(path=None):
 	import pkgutil
+	import importlib
 	import inspect
-	import sys
 	walker = pkgutil.walk_packages(path, '', walk_error)
 	for _, module_name, _ in walker:
-		__import__(module_name)
-		classes = inspect.getmembers(sys.modules[module_name], inspect.isclass)
+		module = importlib.import_module(module_name)
+		classes = inspect.getmembers(module, inspect.isclass)
 		for class_name, obj in classes:
 			if obj.__module__ == module_name:
 					yield obj
