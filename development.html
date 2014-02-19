@@ -4,8 +4,6 @@ id: manifest
 title: Development
 heading: Developing for bootstrap-vz
 ---
-
-
 <p>
 	<h2 id="development_guidelines">Development guidelines</h2>
 	The following guidelines should serve as general advice when developing providers or plugins for bootstrap-vz.
@@ -102,4 +100,56 @@ heading: Developing for bootstrap-vz
 	The filename for each run consists of a timestamp (<tt>%Y%m%d%H%M%S</tt>)
 	and the basename of the manifest used.
 	The log also contains debugging statements regardless of whether the <tt>--debug</tt> switch was used.
+</p>
+
+<p>
+	<h2 id="inner_workings">Inner workings</h2>
+</p>
+<p>
+	<h3>Tasks</h3>
+	At its core bootstrap-vz is based on tasks that perform units of work.
+	By keeping those tasks small and with a solid structure built around them
+	a high degree of flexibility can be achieved.
+	To ensure that tasks are executed in the right order, each task is placed in a dependency
+	graph where directed edges dictate precedence.
+	Each task is a simple class that defines its predecessor tasks and successor tasks
+	via attributes. Here is an example:
+<pre>
+class MapPartitions(Task):
+	description = 'Mapping volume partitions'
+	phase = phases.volume_preparation
+	predecessors = [PartitionVolume]
+	successors = [filesystem.Format]
+
+	@classmethod
+	def run(cls, info):
+		info.volume.partition_map.map(info.volume)
+</pre>
+	In this case the attributes define that the task at hand should run
+	<i>after</i> the <tt>PartitionVolume</tt> task — i.e. after volume
+	has been partitioned (<tt>predecessors</tt>) — but
+	<i>before</i> formatting each partition (<tt>successors</tt>).
+	It is also placed in the <tt>volume_preparation</tt> phase.
+	Phases are ordered and group tasks together.
+	All tasks in a phase are run before proceeding with the tasks in the next phase.
+	They are a way of avoiding the need to list 50 different tasks as predecessors and successors.
+</p>
+<p>
+	The final task list that will be executed is computed by enumerating all tasks in the package,
+	placing them in the graph and <a href="http://en.wikipedia.org/wiki/Topological_sort"> sorting
+	them topoligcally</a>. Subsequently the list returned is filtered to contain only the tasks
+	the provider and the plugins added to the taskset.
+</p>
+<p>
+	<h3>System abstractions</h3>
+	There are several abstractions in bootstrap-vz that make it possible to generalize things like
+	volume creation, partitioning, mounting and package installation.
+	As a rule these abstractions are located in the <tt>base/</tt> folder, where the manifest parsing
+	and task ordering algorithm are placed as well.
+</p>
+<p>
+	<h4>Filesystem</h4>
+</p>
+<p>
+	<h4>Packages</h4>
 </p>
