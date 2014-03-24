@@ -91,8 +91,10 @@ and contribute to this list!
 			Mount folders from the host into key locations of the image volume to avoid any unneccesary disk writes.
 		</li>
 		<li>
-			Use <a href="http://intgat.tigress.co.uk/rmy/uml/index.html">zerofree</a> to deallocate sectors on the
-			volume, that are not used. This only works with unpartitioned volumes.
+			Use <a href="http://intgat.tigress.co.uk/rmy/uml/index.html">zerofree</a> to deallocate unused sectors
+			on the volume.
+			On an unpartitioned volume this will be done for the entire volume, while it will only happen on
+			the root partition for partitioned volumes.
 		</li>
 		<li>
 			Use <a href="https://www.vmware.com/support/ws45/doc/disks_vdiskmanager_eg_ws.html">vmware-vdiskmanager</a>
