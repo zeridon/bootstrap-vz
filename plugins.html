@@ -33,8 +33,10 @@ and contribute to this list!
 
 <p>
 	<h2 id="apt_proxy">APT Proxy</h2>
-	This plugin sets an APT HTTP Proxy, so you could enjoy the benefits of using cached packages instead of download
-	them from the mirror every time.
+	This plugin creates a proxy configuration file for APT, so you could enjoy the benefits of using cached packages
+	instead of downloading them from the mirror every time.
+	You could just install <tt>apt-cacher-ng</tt> on the host machine and then add <tt>"address": "127.0.0.1"</tt> and
+	<tt>"port": 3142</tt> to the manifest file.
 </p>
 <p>
 	<h3>Settings</h3>
