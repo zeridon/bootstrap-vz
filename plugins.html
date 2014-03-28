@@ -32,6 +32,31 @@ and contribute to this list!
 
 
 <p>
+	<h2 id="apt_proxy">APT Proxy</h2>
+	This plugin sets an APT HTTP Proxy, so you could enjoy the benefits of using cached packages instead of download
+	them from the mirror every time.
+</p>
+<p>
+	<h3>Settings</h3>
+	<ul>
+		<li>
+			<tt>address</tt>: The IP or host of the proxy server.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>port</tt>: The port (integer) of the proxy server.
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>persistent</tt>: Whether the proxy configuration file should remain on the machine or not.
+			<span class="valid-enum label label-primary">true, false</span>
+			<span class="default label label-default">false</span>
+			<span class="optional label label-success"></span>
+		</li>
+	</ul>
+</p>
+
+<p>
 	<h2 id="cloud_init">cloud-init</h2>
 	This plugin installs and configures <a href="https://packages.debian.org/wheezy-backports/cloud-init">cloud-init</a>
 	on the system. Depending on the release it installs it from either backports or the main repository.<br/>
