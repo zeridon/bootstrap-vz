@@ -21,18 +21,17 @@ heading: bootstrap-vz
 	Here are a few quickstart tutorials for the most common images.<br/>
 	If you plan on partitioning your volume, you will need the <tt>parted</tt> package and <tt>kpartx</tt>:
 <pre>
-root@host:~$ apt-get install parted kpartx
+root@host:~# apt-get install parted kpartx
 </pre>
 </p>
 <p>
 	<h3>VirtualBox Vagrant</h3>
 <pre>
 user@host:~$ sudo -i # become root
-root@host:~$ git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
-root@host:~$ apt-get install qemu-utils debootstrap python-pip # Install dependencies from aptitude
-root@host:~$ pip install termcolor jsonschema fysom # Install python dependencies
-root@host:~$ cd bootstrap-vz
-root@host:~/bootstrap-vz$ ./bootstrap-vz manifests/virtualbox-vagrant.manifest.json
+root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
+root@host:~# apt-get install qemu-utils debootstrap python-pip # Install dependencies from aptitude
+root@host:~# pip install termcolor jsonschema fysom # Install python dependencies
+root@host:~# bootstrap-vz/bootstrap-vz manifests/virtualbox-vagrant.manifest.json
 </pre>
 	If you want to use <a href="plugins.html#minimize_size">minimize_size</a>
 	plugin, you will have to install the <tt>zerofree</tt> package and <a href="https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_workstation/10_0">VMWare Workstation</a> as well.
@@ -41,11 +40,10 @@ root@host:~/bootstrap-vz$ ./bootstrap-vz manifests/virtualbox-vagrant.manifest.j
 	<h3>Amazon EC2 EBS backed AMI</h3>
 <pre>
 user@host:~$ sudo -i # become root
-root@host:~$ git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
-root@host:~$ apt-get install debootstrap python-pip # Install dependencies from aptitude
-root@host:~$ pip install termcolor jsonschema fysom boto # Install python dependencies
-root@host:~$ cd bootstrap-vz
-root@host:~/bootstrap-vz$ ./bootstrap-vz manifests/ec2-ebs-debian-official-amd64-pvm.manifest.json
+root@host:~# git clone https://github.com/andsens/bootstrap-vz.git # Clone the repo
+root@host:~# apt-get install debootstrap python-pip # Install dependencies from aptitude
+root@host:~# pip install termcolor jsonschema fysom boto # Install python dependencies
+root@host:~# bootstrap-vz/bootstrap-vz manifests/ec2-ebs-debian-official-amd64-pvm.manifest.json
 </pre>
 	To bootstrap S3 backed AMIs, the <tt>euca2ools</tt> package is the only additional package required.
 </p>
