@@ -133,23 +133,14 @@ heading: The manifest file
 	does not fit under any other section.
 	<ul>
 		<li>
-			<tt>release</tt>: Defines which debian release should be bootstrapped.
-			<span class="valid-enum label label-primary">squeeze, wheezy, jessie, sid, oldstable, stable, testing, unstable</span>
-			<span class="required label label-danger"></span>
-		</li>
-		<li>
 			<tt>architecture</tt>: The architecture of the system.
 			<span class="valid-enum label label-primary">i386, amd64</span>
 			<span class="required label label-danger"></span>
 		</li>
 		<li>
-			<tt>timezone</tt>: Timezone of the system.
-			<span class="valid label label-primary"></span> Any filename from <tt>/usr/share/zoneinfo</tt>
-			<span class="required label label-danger"></span>
-		</li>
-		<li>
-			<tt>locale</tt>: The default locale of the system.
-			<span class="valid label label-primary"></span> Any locale mentioned in <tt>/etc/locale.gen</tt>
+			<tt>bootloader</tt>: The bootloader for the system. Depending on the bootmethod of the virtualization
+			platform, the options may be restricted.
+			<span class="valid-enum label label-primary">grub, extlinux, pv-grub</span>
 			<span class="required label label-danger"></span>
 		</li>
 		<li>
@@ -158,9 +149,22 @@ heading: The manifest file
 			<span class="required label label-danger"></span>
 		</li>
 		<li>
-			<tt>bootloader</tt>: The bootloader for the system. Depending on the bootmethod of the virtualization
-			platform, the options may be restricted.
-			<span class="valid-enum label label-primary">grub, extlinux, pv-grub</span>
+			<tt>hostname</tt>: hostname to preconfigure the system with.
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>locale</tt>: The default locale of the system.
+			<span class="valid label label-primary"></span> Any locale mentioned in <tt>/etc/locale.gen</tt>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>release</tt>: Defines which debian release should be bootstrapped.
+			<span class="valid-enum label label-primary">squeeze, wheezy, jessie, sid, oldstable, stable, testing, unstable</span>
+			<span class="required label label-danger"></span>
+		</li>
+		<li>
+			<tt>timezone</tt>: Timezone of the system.
+			<span class="valid label label-primary"></span> Any filename from <tt>/usr/share/zoneinfo</tt>
 			<span class="required label label-danger"></span>
 		</li>
 	</ul>
