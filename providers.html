@@ -34,11 +34,12 @@ heading: Providers
 
 <p>
 	<h2 id="gce">Google Compute Engine</h2>
-	The <a href="https://cloud.google.com/products/compute-engine/">GCE</a> provider is in development but
-	not fully finished.
-	To bootstrap a Google Compute Engine image, you will have to resort to the
-	<a href="https://github.com/andsens/build-debian-cloud">build-debian-cloud</a> bash script.
-	The predecessor of bootstrap-vz.
+	The <a href="https://cloud.google.com/products/compute-engine/">GCE</a> provider can creates image
+	as expected by GCE - i.e. raw disk image in *.tar.gz file. It can upload created images to Google
+	Storage Engine (to URI provided in manifest by <tt>gcs_destination</tt>) and can register image
+	to be used by Google Compute Engine to project provided in manifest by <tt>gce_project</tt>.
+	Both of those functionalities are not fully tested yet.
+
 </p>
 
 <p>
