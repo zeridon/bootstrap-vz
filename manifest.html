@@ -222,6 +222,20 @@ heading: The manifest file
 			aptitude keyring of trusted signatures for repositories.
 			<span class="optional label label-success"></span>
 		</li>
+		<li>
+			<tt>preferences</tt>: Allows you to pin packages through
+			<a href="https://wiki.debian.org/AptPreferences">apt preferences</a>.
+			The setting is an object where the key is the preference filename in <tt>/etc/apt/preferences.d/</tt>.
+			The key <tt>main</tt> is special and refers to the file <tt>/etc/apt/preferences</tt>,
+			which will be overwritten if specified.
+			<span class="optional label label-success"></span><br/>
+			The values are objects with three keys:
+			<ul>
+				<li><tt>package</tt>: The package to pin (wildcards allowed)</li>
+				<li><tt>pin</tt>: The release to pin the package to.</li>
+				<li><tt>pin-priority</tt>: The priority of this pin.</li>
+			</ul>
+		</li>
 	</ul>
 </p>
 
