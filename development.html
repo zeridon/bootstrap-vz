@@ -79,7 +79,8 @@ heading: Developing for bootstrap-vz
 		</li>
 		<li>
 			<b>When invoking external programs, don't use full paths, rely on <tt>$PATH</tt></b><br/>
-			This increases robustness when executable locations change.
+			This increases robustness when executable locations change.<br/>
+			Example: Use <tt>log_call(['wget', ...])</tt> instead of <tt>log_call(['/usr/bin/wget', ...])</tt>.
 		</li>
 	</ul>
 </p>
