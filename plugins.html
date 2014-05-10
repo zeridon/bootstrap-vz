@@ -232,6 +232,10 @@ FILES         path_to_my_ssh_public_key.pub
 			on the image. Any existing files will be overwritten.
 			<span class="optional label label-success"></span>
 		</li>
+		<li>
+			<tt>enable_agent</tt>: Whether the puppet agent daemon should be enabled.
+			<span class="optional label label-success"></span>
+		</li>
 	</ul>
 </p>
 
@@ -275,20 +279,45 @@ FILES         path_to_my_ssh_public_key.pub
 
 <p>
 	<h2 id="vagrant">Vagrant</h2>
-	Vagrant is a tool to quickly create virtualized environments.
-	It uses "boxes" to make downloading and sharing those environments easier.
-	A box is a tarball containing a virtual volumes accompanied by an
-	<a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format">OVF specification</a>
-	of the virtual machine.<br/>
-	This plugin creates a vagrant box that is ready to be shared or deployed.
-	At the moment it is only compatible with the VirtualBoox provider.
+	Vagrant is a tool to quickly create virtualized environments. It uses "boxes" to make downloading and
+	sharing those environments easier. A box is a tarball containing a virtual volumes accompanied by an
+	<a href="http://en.wikipedia.org/wiki/Open_Virtualization_Format">OVF specification</a> of the virtual
+	machine.<br/>
+	This plugin creates a vagrant box that is ready to be shared or deployed. At the moment it is only
+	compatible with the VirtualBox provider and doesn't requires any additional settings.
+</p>
+
+<p>
+	<h2 id="salt">Salt</h2>
+	Install <a href="http://www.saltstack.com/">salt</a> minion in
+	the image. Uses
+	<a href="https://github.com/saltstack/salt-bootstrap">salt-bootstrap</a>
+	script to install.
 </p>
 <p>
 	<h3>Settings</h3>
 	<ul>
 		<li>
-			<tt>hostname</tt>: hostname to preconfigure the system with.
+			<tt>install_source</tt>: Source to install salt codebase from. 
+			<span class="valid label label-primary"> <tt>stable</tt> for current stable,
+			<tt>daily</tt> for installing the daily build, and <tt>git</tt> to install from git repository.
 			<span class="required label label-danger"></span>
 		</li>
+		<li>
+			<tt>version</tt>: Only needed if you are installing from <tt>git</tt>.
+			<span class="valid label label-primary"><tt>develop</tt> to install current development head, 
+			or provide any tag name or commit hash from <a href="https://github.com/saltstack/salt">salt repo</a>
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+			<tt>master</tt>: Salt master FQDN or IP
+			<span class="optional label label-success"></span>
+		</li>
+		<li>
+		        <tt>grains</tt>: Set <a href="http://docs.saltstack.com/en/latest/topics/targeting/grains.html">
+			salt grains</a> for this minion. Accepts a map with grain name as key and the grain data as value.
+			<span class="optional label label-success"></span>
+		</li>
+
 	</ul>
 </p>
