@@ -274,11 +274,26 @@ heading: The manifest file
 							<span class="valid-enum label label-primary">ext2, ext3, ext4, xfs</span>
 							<span class="required label label-danger"></span>
 						</li>
+						<li>
+							<tt>format_command</tt>: Command to format the partition with.
+							This optional setting overrides the command bootstrap-vz would normally use to
+							format the partition. The command is specified as a string array where each
+							option/argument is an item in that array
+							(much like the <a href="plugins.html#image_commands">image_commands</a> plugin).
+							<span class="optional label label-success"></span><br/>
+							The following variables are available:
+							<ul>
+								<li><tt>{fs}</tt>: The filesystem of the partition.</li>
+								<li><tt>{device_path}</tt>: The device path of the partition.</li>
+								<li><tt>{size}</tt>: The size of the partition.</li>
+							</ul>
+							The default command used by boostrap-vz is <tt>['mkfs.{fs}', '{device_path}']</tt>.
+						</li>
 					</ul>
 				</li>
 				<li>
 					<tt>boot</tt>: Configuration of the boot partition.
-					The two settings equal those of the root partition.
+					The three settings equal those of the root partition.
 					<span class="optional label label-success"></span>
 				</li>
 				<li>
