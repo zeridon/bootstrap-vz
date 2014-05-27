@@ -39,6 +39,7 @@ class BundleImage(Task):
 		bundle_name = 'bundle-' + info.run_id
 		info._ec2['bundle_path'] = os.path.join(info.workspace, bundle_name)
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
+		log_check_call(['mkdir', info._ec2['bundle_path']])
 		log_check_call(['ec2-bundle-image',
 		                '--image', info.volume.image_path,
 		                '--arch', arch,
