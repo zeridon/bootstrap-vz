@@ -71,9 +71,7 @@ class UploadImage(Task):
 		                '--manifest', manifest_file,
 		                '--access-key', info.credentials['access-key'],
 		                '--secret-key', info.credentials['secret-key'],
-		                '--url', s3_url,
-		                '--region', info._ec2['region'],
-		                '--ec2cert', cert_ec2])
+		                '--url', s3_url])
 
 
 class RemoveBundle(Task):
