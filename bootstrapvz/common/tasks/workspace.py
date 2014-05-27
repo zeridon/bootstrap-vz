@@ -18,5 +18,5 @@ class DeleteWorkspace(Task):
 
 	@classmethod
 	def run(cls, info):
-		import os
-		os.rmdir(info.workspace)
+		import shutil
+		shutil.rmtree(info.workspace)
