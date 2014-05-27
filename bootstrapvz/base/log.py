@@ -61,7 +61,7 @@ class ConsoleFormatter(logging.Formatter):
 	"""
 	level_colors = {logging.ERROR: 'red',
 	                logging.WARNING: 'magenta',
-	                logging.INFO: 'blue',
+	                logging.INFO: 'cyan',
 	                }
 
 	def format(self, record):
