@@ -20,6 +20,7 @@ class AddRequiredCommands(Task):
 def get_bootstrap_args(info):
 	executable = ['debootstrap']
 	options = ['--arch=' + info.manifest.system['architecture']]
+	options.append('--variant=minbase')
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
@@ -58,7 +59,7 @@ class MakeTarball(Task):
 
 
 class Bootstrap(Task):
-	description = 'Installing Debian'
+	description = 'Installing Ubuntu'
 	phase = phases.os_installation
 	predecessors = [MakeTarball]
 

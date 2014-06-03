@@ -29,7 +29,7 @@ class BootstrapInformation(object):
 		self.volume = load_volume(self.manifest.volume, manifest.system['bootloader'])
 
 		# The default apt mirror
-		self.apt_mirror = self.manifest.packages.get('mirror', 'http://http.debian.net/debian')
+		self.apt_mirror = self.manifest.packages.get('mirror', 'http://archive.ubuntu.com/ubuntu')
 
 		# Normalize the release codenames so that tasks may query for release codenames rather than
 		# 'stable', 'unstable' etc. This is useful when handling cases that are specific to a release.

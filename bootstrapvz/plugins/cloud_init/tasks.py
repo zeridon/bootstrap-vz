@@ -44,7 +44,7 @@ class SetUsername(Task):
 		from bootstrapvz.common.tools import sed_i
 		cloud_cfg = os.path.join(info.root, 'etc/cloud/cloud.cfg')
 		username = info.manifest.plugins['cloud_init']['username']
-		search = '^     name: debian$'
+		search = '^     name: ubuntu$'
 		replace = ('     name: {username}\n'
 		           '     sudo: ALL=(ALL) NOPASSWD:ALL\n'
 		           '     shell: /bin/bash').format(username=username)
