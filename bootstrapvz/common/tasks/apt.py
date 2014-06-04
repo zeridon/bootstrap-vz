@@ -27,8 +27,8 @@ class AddDefaultSources(Task):
 		info.source_lists.add('main', 'deb     {apt_mirror} {system.release} ' + components)
 		info.source_lists.add('main', 'deb-src {apt_mirror} {system.release} ' + components)
 		if info.release_codename != 'sid':
-			info.source_lists.add('main', 'deb     http://security.ubuntu.com/  {system.release}-security ' + components)
-			info.source_lists.add('main', 'deb-src http://security.ubuntu.com/  {system.release}-security ' + components)
+			info.source_lists.add('main', 'deb     http://security.ubuntu.com/ubuntu  {system.release}-security ' + components)
+			info.source_lists.add('main', 'deb-src http://security.ubuntu.com/ubuntu  {system.release}-security ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-updates ' + components)
 			info.source_lists.add('main', 'deb-src {apt_mirror} {system.release}-updates ' + components)
 			info.source_lists.add('main', 'deb     {apt_mirror} {system.release}-backports ' + components)

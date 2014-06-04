@@ -24,14 +24,18 @@ class DisableGetTTYs(Task):
 
 	@classmethod
 	def run(cls, info):
-		from ..tools import sed_i
-		inittab_path = os.path.join(info.root, 'etc/inittab')
-		tty1 = '1:2345:respawn:/sbin/getty 38400 tty1'
-		sed_i(inittab_path, '^' + tty1, '#' + tty1)
-		ttyx = ':23:respawn:/sbin/getty 38400 tty'
-		for i in range(2, 7):
+		#from ..tools import sed_i
+		#inittab_path = os.path.join(info.root, 'etc/init/tty?.conf')
+		#tty1 = '^'
+		#sed_i(inittab_path, tty1, '###')
+		#ttyx = ':23:respawn:/sbin/getty 38400 tty'
+		#for i in range(2, 7):
+		#	i = str(i)
+		#	sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
+		from os import remove
+		for i in range(1, 6):
 			i = str(i)
-			sed_i(inittab_path, '^' + i + ttyx + i, '#' + i + ttyx + i)
+			remove(info.root + '/etc/init/tty' + i + '.conf')
 
 
 class AddGrubPackage(Task):

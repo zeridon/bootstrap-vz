@@ -35,8 +35,8 @@ class GenerateLocale(Task):
 		# force locales for ubuntu
 		#log_check_call(['chroot', info.root, 'mkdir -p /var/lib/locales/supported.d/'])
 		#log_check_call(['chroot', info.root, 'echo touch /var/lib/locales/supported.d/local'])
-		log_check_call(['echo \"' + locale_str + '\"', ' | chroot', info.root, 'tee -a /var/lib/locales/supported.d/local'])
-		log_check_call(['echo LANG=\"' + lang + '\"', ' | chroot', 'tee -a /etc/default/locale'])
+		#log_check_call(['echo \"' + locale_str + '\" > ', info.root + '/var/lib/locales/supported.d/local'])
+		#log_check_call(['echo LANG=\"' + lang + '\" >', info.root + '/etc/default/locale'])
 
 		log_check_call(['chroot', info.root, 'locale-gen'])
 		log_check_call(['chroot', info.root,

@@ -20,10 +20,10 @@ class InstallInitScripts(Task):
 			dst = os.path.join(info.root, 'etc/init.d', name)
 			copy(src, dst)
 			os.chmod(dst, rwxr_xr_x)
-			log_check_call(['chroot', info.root, 'insserv', '--default', name])
+			log_check_call(['chroot', info.root, 'update-rc.d', name, 'defaults'])
 
 		for name in info.initd['disable']:
-			log_check_call(['chroot', info.root, 'insserv', '--remove', name])
+			log_check_call(['chroot', info.root, 'update-rc.d', '-f', name, 'remove'])
 
 
 class AddExpandRoot(Task):
