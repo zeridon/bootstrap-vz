@@ -72,6 +72,7 @@ class Zerofree(Task):
 		from bootstrapvz.common.tools import log_check_call
 		log_check_call(['pkill', 'udevd'])
 		log_check_call(['zerofree', info.volume.partition_map.root.device_path])
+		log_check_call(['sleep', '10s'])
 
 
 class ShrinkVolume(Task):
