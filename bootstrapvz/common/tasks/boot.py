@@ -110,7 +110,7 @@ class InstallGrub(Task):
 
 			# Install grub
 			log_check_call(['chroot', info.root,
-			                'grub-install', device_path])
+			                'grub-install', '--force', device_path])
 			log_check_call(['chroot', info.root, 'update-grub'])
 		except Exception as e:
 			if isinstance(info.volume, LoopbackVolume):

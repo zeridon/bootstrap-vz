@@ -8,9 +8,10 @@
 			"properties": {
 				"release": {
 					"type": "string",
-					"enum": ["wheezy", "stable",
-					         "jessie", "testing",
-					         "sid", "unstable"]
+					"enum": ["trusty", "stable",
+					         "precise", "testing",
+					         "utopic", "unstable",
+						 "saucy"]
 				}
 			}
 		},

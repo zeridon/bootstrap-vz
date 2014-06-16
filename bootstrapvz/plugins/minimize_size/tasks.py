@@ -70,6 +70,7 @@ class Zerofree(Task):
 	@classmethod
 	def run(cls, info):
 		from bootstrapvz.common.tools import log_check_call
+		log_check_call(['pkill', 'udevd'])
 		log_check_call(['zerofree', info.volume.partition_map.root.device_path])
 
 

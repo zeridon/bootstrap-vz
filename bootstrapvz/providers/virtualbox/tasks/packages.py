@@ -10,6 +10,6 @@ class DefaultPackages(Task):
 
 	@classmethod
 	def run(cls, info):
-		kernels = {'amd64': 'linux-image-amd64',
-		           'i386':  'linux-image-686', }
+		kernels = {'amd64': 'linux-image-server',
+		           'i386':  'linux-image-server', }
 		info.packages.add(kernels.get(info.manifest.system['architecture']))
