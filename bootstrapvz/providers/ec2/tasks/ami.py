@@ -100,6 +100,7 @@ class RegisterAMI(Task):
 
 		if info.manifest.volume['backing'] == 's3':
 			registration_params['image_location'] = info._ec2['manifest_location']
+			registration_params['root_device_name'] = '/dev/xvda1'
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
 			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
@@ -121,4 +122,12 @@ class RegisterAMI(Task):
 			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
 			                                                          info.manifest.system['architecture']])
 
+		map = BlockDeviceMapping()
+		for i in range(4):
+			device = BlockDeviceType()
+			device_name = "/dev/sd%s" % (chr(ord('b')+i))
+			device.ephemeral_name = "ephemeral%i" % i
+			map[device_name] = device
+
+		registration_params['block_device_map'] = map
 		info._ec2['image'] = info._ec2['connection'].register_image(**registration_params)
