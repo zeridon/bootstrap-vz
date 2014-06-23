@@ -39,15 +39,36 @@ class BundleImage(Task):
 		bundle_name = 'bundle-' + info.run_id
 		info._ec2['bundle_path'] = os.path.join(info.workspace, bundle_name)
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
-		log_check_call(['euca-bundle-image',
-		                '--image', info.volume.image_path,
-		                '--arch', arch,
-		                '--user', info.credentials['user-id'],
-		                '--privatekey', info.credentials['private-key'],
-		                '--cert', info.credentials['certificate'],
-		                '--ec2cert', cert_ec2,
-		                '--destination', info._ec2['bundle_path'],
-		                '--prefix', info._ec2['ami_name']])
+
+		# Support ephemerals
+		if info.manifest.image['ephemerals']:
+			eph_block_map = ''
+			# make the map (ugly)
+			for i in range(24):
+				eph_block_map = eph_block_map + "ephemeral%i" % i + "=" + "sd%s" % (chr(ord('b') + i)) + ','
+
+			# trim edges so we dont hit issues with shell
+			eph_block_map = eph_block_map.rstrip(',')
+			log_check_call(['euca-bundle-image',
+			                '--image', info.volume.image_path,
+			                '--arch', arch,
+			                '--user', info.credentials['user-id'],
+			                '--privatekey', info.credentials['private-key'],
+			                '--cert', info.credentials['certificate'],
+			                '--ec2cert', cert_ec2,
+			                '--destination', info._ec2['bundle_path'],
+			                '--prefix', info._ec2['ami_name'],
+			                '--block-device-mapping', eph_block_map])
+		else:
+			log_check_call(['euca-bundle-image',
+			                '--image', info.volume.image_path,
+			                '--arch', arch,
+			                '--user', info.credentials['user-id'],
+			                '--privatekey', info.credentials['private-key'],
+			                '--cert', info.credentials['certificate'],
+			                '--ec2cert', cert_ec2,
+			                '--destination', info._ec2['bundle_path'],
+			                '--prefix', info._ec2['ami_name']])
 
 
 class UploadImage(Task):
@@ -101,6 +122,23 @@ class RegisterAMI(Task):
 
 		if info.manifest.volume['backing'] == 's3':
 			registration_params['image_location'] = info._ec2['manifest_location']
+
+			if info.manifest.image['ephemerals']:
+				# Support preadding all ephemeral volumes
+				from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
+
+				# Create the boto mapping (max 24 ephemerals)
+				# if less ephemerals are available less will be used (tested with m1.small/med/xlarge, c3.2xlarge, hs1.8xlarge
+				map = BlockDeviceMapping()
+				for i in range(24):
+					device = BlockDeviceType()
+					device_name = "/dev/sd%s" % (chr(ord('b') + i))
+					device.ephemeral_name = "ephemeral%i" % i
+					map[device_name] = device
+
+				# Add the mapping parameter
+				registration_params['block_device_map'] = map
+
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
 			                 'hvm': '/dev/xvda'}.get(info.manifest.data['virtualization'])
@@ -112,6 +150,14 @@ class RegisterAMI(Task):
 			                               size=info.volume.size.get_qty_in('GiB'))
 			registration_params['block_device_map'] = BlockDeviceMapping()
 			registration_params['block_device_map'][root_dev_name] = block_device
+
+			if info.manifest.image['ephemerals']:
+				# add ephemerals
+				for i in range(24):
+					ephemeral_device = BlockDeviceType()
+					ephemeral_device_name = "/dev/sd%s" % (chr(ord('b') + i))
+					ephemeral_device.ephemeral_name = "ephemeral%i" % i
+					registration_params['block_device_map'][ephemeral_device_name] = ephemeral_device
 
 		if info.manifest.data['virtualization'] == 'hvm':
 			registration_params['virtualization_type'] = 'hvm'
