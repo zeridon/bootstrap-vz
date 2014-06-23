@@ -122,6 +122,7 @@ class RegisterAMI(Task):
 			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
 			                                                          info.manifest.system['architecture']])
 
+		from boto.ec2.blockdevicemapping import BlockDeviceMapping,BlockDeviceType
 		map = BlockDeviceMapping()
 		for i in range(4):
 			device = BlockDeviceType()
