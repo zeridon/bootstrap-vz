@@ -122,11 +122,13 @@ class RegisterAMI(Task):
 			registration_params['kernel_id'] = config_get(akis_path, [info._ec2['region'],
 			                                                          info.manifest.system['architecture']])
 
+		# Support preadding all ephemeral volumes
 		from boto.ec2.blockdevicemapping import BlockDeviceMapping,BlockDeviceType
+
 		map = BlockDeviceMapping()
-		for i in range(4):
+		for i in range(24):
 			device = BlockDeviceType()
-			device_name = "/dev/sd%s" % (chr(ord('b')+i))
+			device_name = "sd%s" % (chr(ord('b')+i))
 			device.ephemeral_name = "ephemeral%i" % i
 			map[device_name] = device
 
