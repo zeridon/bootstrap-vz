@@ -103,14 +103,14 @@ class RegisterAMI(Task):
 			registration_params['image_location'] = info._ec2['manifest_location']
 
 			# Support preadding all ephemeral volumes
-			from boto.ec2.blockdevicemapping import BlockDeviceMapping,BlockDeviceType
+			from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 
 			# Create the boto mapping (max 24 ephemerals)
 			# if less ephemerals are available less will be used (tested with m1.small/med/xlarge, c3.2xlarge, hs1.8xlarge
 			map = BlockDeviceMapping()
 			for i in range(24):
 				device = BlockDeviceType()
-				device_name = "sd%s" % (chr(ord('b')+i))
+				device_name = "/dev/sd%s" % (chr(ord('b') + i))
 				device.ephemeral_name = "ephemeral%i" % i
 				map[device_name] = device
 
@@ -132,7 +132,7 @@ class RegisterAMI(Task):
 			# add ephemerals
 			for i in range(24):
 				ephemeral_device = BlockDeviceType()
-				ephemeral_device_name = "sd%s" % (chr(ord('b')+i))
+				ephemeral_device_name = "/dev/sd%s" % (chr(ord('b') + i))
 				ephemeral_device.ephemeral_name = "ephemeral%i" % i
 				registration_params['block_device_map'][ephemeral_device_name] = ephemeral_device
 
