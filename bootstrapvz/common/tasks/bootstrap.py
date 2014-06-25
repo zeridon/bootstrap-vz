@@ -23,8 +23,6 @@ def get_bootstrap_args(info):
 	variant = info.manifest.system.get('variant', None)
 	if variant:
 		options.append('--variant=' + variant)
-		info.include_packages.add('dialog')
-		info.include_packages.add('libterm-readline-gnu-perl')
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
