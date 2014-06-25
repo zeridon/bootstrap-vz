@@ -102,20 +102,21 @@ class RegisterAMI(Task):
 		if info.manifest.volume['backing'] == 's3':
 			registration_params['image_location'] = info._ec2['manifest_location']
 
-			# Support preadding all ephemeral volumes
-			from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
+			if info.manifest.image['ephemerals']:
+				# Support preadding all ephemeral volumes
+				from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 
-			# Create the boto mapping (max 24 ephemerals)
-			# if less ephemerals are available less will be used (tested with m1.small/med/xlarge, c3.2xlarge, hs1.8xlarge
-			map = BlockDeviceMapping()
-			for i in range(24):
-				device = BlockDeviceType()
-				device_name = "/dev/sd%s" % (chr(ord('b') + i))
-				device.ephemeral_name = "ephemeral%i" % i
-				map[device_name] = device
+				# Create the boto mapping (max 24 ephemerals)
+				# if less ephemerals are available less will be used (tested with m1.small/med/xlarge, c3.2xlarge, hs1.8xlarge
+				map = BlockDeviceMapping()
+				for i in range(24):
+					device = BlockDeviceType()
+					device_name = "/dev/sd%s" % (chr(ord('b') + i))
+					device.ephemeral_name = "ephemeral%i" % i
+					map[device_name] = device
 
-			# Add the mapping parameter
-			registration_params['block_device_map'] = map
+				# Add the mapping parameter
+				registration_params['block_device_map'] = map
 
 		else:
 			root_dev_name = {'pvm': '/dev/sda',
@@ -129,12 +130,13 @@ class RegisterAMI(Task):
 			registration_params['block_device_map'] = BlockDeviceMapping()
 			registration_params['block_device_map'][root_dev_name] = block_device
 
-			# add ephemerals
-			for i in range(24):
-				ephemeral_device = BlockDeviceType()
-				ephemeral_device_name = "/dev/sd%s" % (chr(ord('b') + i))
-				ephemeral_device.ephemeral_name = "ephemeral%i" % i
-				registration_params['block_device_map'][ephemeral_device_name] = ephemeral_device
+			if info.manifest.image['ephemerals']:
+				# add ephemerals
+				for i in range(24):
+					ephemeral_device = BlockDeviceType()
+					ephemeral_device_name = "/dev/sd%s" % (chr(ord('b') + i))
+					ephemeral_device.ephemeral_name = "ephemeral%i" % i
+					registration_params['block_device_map'][ephemeral_device_name] = ephemeral_device
 
 		if info.manifest.data['virtualization'] == 'hvm':
 			registration_params['virtualization_type'] = 'hvm'
