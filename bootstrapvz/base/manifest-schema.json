@@ -43,6 +43,7 @@
 			"properties": {
 				"release":      { "enum": ["utopic", "trusty", "precise", "saucy", "stable", "testing", "unstable"] },
 				"architecture": { "enum": ["i386", "amd64"] },
+				"variant":      { "enum": ["minbase", "buildd", "fakechroot", "scratchbox"] },
 				"bootloader":   { "enum": ["pvgrub", "grub", "extlinux"] },
 				"timezone":     { "type": "string" },
 				"locale":       { "type": "string" },

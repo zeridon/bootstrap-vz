@@ -20,11 +20,13 @@ class AddRequiredCommands(Task):
 def get_bootstrap_args(info):
 	executable = ['debootstrap']
 	options = ['--arch=' + info.manifest.system['architecture']]
-	options.append('--variant=minbase')
 	if len(info.include_packages) > 0:
 		options.append('--include=' + ','.join(info.include_packages))
 	if len(info.exclude_packages) > 0:
 		options.append('--exclude=' + ','.join(info.exclude_packages))
+	variant = info.manifest.system.get('variant', None)
+	if variant:
+		options.append('--variant=' + variant)
 	mirror = info.manifest.bootstrapper.get('mirror', info.apt_mirror)
 	arguments = [info.manifest.system['release'], info.root, mirror]
 	return executable, options, arguments
