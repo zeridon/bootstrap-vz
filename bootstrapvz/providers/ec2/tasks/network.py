@@ -15,6 +15,7 @@ class EnableDHCPCDDNS(Task):
 		from bootstrapvz.common.tools import sed_i
 		dhcpcd = os.path.join(info.root, 'etc/default/dhcpcd')
 		sed_i(dhcpcd, '^#*SET_DNS=.*', 'SET_DNS=\'yes\'')
+		sed_i(os.path.join(info.root, 'sbin/dhcpcd3'), '^#!/bin/bash', '#!/bin/bash -xe')
 
 
 class AddBuildEssentialPackage(Task):
