@@ -40,35 +40,27 @@ class BundleImage(Task):
 		info._ec2['bundle_path'] = os.path.join(info.workspace, bundle_name)
 		arch = {'i386': 'i386', 'amd64': 'x86_64'}.get(info.manifest.system['architecture'])
 
+		euca_param_list = ['--image', info.volume.image_path,
+				   '--arch', arch,
+				   '--user', info.credentials['user-id'],
+				   '--privatekey', info.credentials['private-key'],
+				   '--cert', info.credentials['certificate'],
+				   '--ec2cert', cert_ec2,
+				   '--destination', info._ec2['bundle_path'],
+				   '--prefix', info._ec2['ami_name']]
+
 		# Support ephemerals
 		if info.manifest.image['ephemerals']:
 			eph_block_map = ''
-			# make the map (ugly)
-			for i in range(24):
-				eph_block_map = eph_block_map + "ephemeral%i" % i + "=" + "sd%s" % (chr(ord('b') + i)) + ','
+			# make the map
+			eph_block_map = ','.join(["ephemeral{idx}=sd{letter}".format(idx=idx, letter=letter) for idx, letter in enumerate(string.ascii_lowercase[1:-1])])
 
-			# trim edges so we dont hit issues with shell
-			eph_block_map = eph_block_map.rstrip(',')
 			log_check_call(['euca-bundle-image',
-			                '--image', info.volume.image_path,
-			                '--arch', arch,
-			                '--user', info.credentials['user-id'],
-			                '--privatekey', info.credentials['private-key'],
-			                '--cert', info.credentials['certificate'],
-			                '--ec2cert', cert_ec2,
-			                '--destination', info._ec2['bundle_path'],
-			                '--prefix', info._ec2['ami_name'],
+				        euca_param_list,
 			                '--block-device-mapping', eph_block_map])
 		else:
 			log_check_call(['euca-bundle-image',
-			                '--image', info.volume.image_path,
-			                '--arch', arch,
-			                '--user', info.credentials['user-id'],
-			                '--privatekey', info.credentials['private-key'],
-			                '--cert', info.credentials['certificate'],
-			                '--ec2cert', cert_ec2,
-			                '--destination', info._ec2['bundle_path'],
-			                '--prefix', info._ec2['ami_name']])
+			                euca_param_list])
 
 
 class UploadImage(Task):
